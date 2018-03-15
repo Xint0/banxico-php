@@ -1,5 +1,5 @@
 {
-    "name": "Xint0/banxico-php",
+    "name": "xint0/banxico-php",
     "type": "library",
     "description": "Cliente PHP para la API ReST del SIE del Banco de México",
     "keywords": ["rest", "cliente", "client", "Banco de Mexico", "SIE", "API"],
