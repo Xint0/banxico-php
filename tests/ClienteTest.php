@@ -5,7 +5,7 @@ namespace Xint0\BanxicoPHP\Tests;
 use Xint0\BanxicoPHP\Cliente;
 use PHPUnit\Framework\TestCase;
 
-final class BanxicoPHPTest extends TestCase
+final class ClienteTest extends TestCase
 {
     public function testCanBeCreatedWithToken()
     {
