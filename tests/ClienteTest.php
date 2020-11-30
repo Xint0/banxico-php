@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP\Tests;
 
-use ArgumentCountError;
 use Http\Discovery\ClassDiscovery;
 use Xint0\BanxicoPHP\Cliente;
 use Http\Client\HttpClient;
@@ -26,17 +25,16 @@ final class ClienteTest extends TestCase
         ClassDiscovery::prependStrategy(MockClientStrategy::class);
     }
 
-    public function test_constructor_requires_http_client_interface(): void
+    public function test_throws_exception_without_token(): void
     {
-        $this->expectException(ArgumentCountError::class);
-        /** @noinspection PhpParamsInspection */
+        $this->expectError();
+        $this->expectErrorMessage('Undefined index: token');
         new Cliente();
     }
 
     public function test_can_be_created_with_token(): void
     {
-        $httpClient = HttpClientFactory::create('test-token');
-        $cliente = new Cliente($httpClient);
+        $cliente = new Cliente([ 'token' => 'test-token' ]);
 
         $this->assertInstanceOf(Cliente::class, $cliente);
     }
@@ -85,7 +83,7 @@ final class ClienteTest extends TestCase
         /** @var MockHttpClient $mockHttpClient */
         $mockHttpClient = $this->mockHttpClient();
         $httpClient = HttpClientFactory::create('test-token', [], $mockHttpClient);
-        $sut = new Cliente($httpClient);
+        $sut = new Cliente([ 'token' => 'test-token' ], $httpClient);
 
         $method = $testData['method'];
         $params = $testData['params'] ?? [];
