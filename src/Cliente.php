@@ -1,49 +1,44 @@
 <?php
+
 namespace Xint0\BanxicoPHP;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Request;
+use Exception;
+use Http\Client\HttpClient;
+use InvalidArgumentException;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
+use Psr\Http\Message\UriFactoryInterface;
 
 /**
- * @method string obtenerTipoDeCambioUSDPagos(string $fechaInicio = null, string $fechaFinal = null)
- * @method string obtenerTipoDeCambioUSDFix(string $fechaInicio = null, string $fechaFinal = null)
+ * @method string obtenerTipoDeCambioUsdPagos(string $fechaInicio = null, string $fechaFinal = null)
+ * @method string obtenerTipoDeCambioUsdFix(string $fechaInicio = null, string $fechaFinal = null)
  */
 class Cliente
 {
-    /** @var array Series */
-    const MAPA_SERIES = [
-        'TipoDeCambioUSDPagos' => 'SF60653',
-        'TipoDeCambioUSDFix' => 'SF43718'
+    private const MAPA_SERIES = [
+        'TipoDeCambioUsdPagos' => 'SF60653',
+        'TipoDeCambioUsdFix' => 'SF43718'
     ];
 
-    /** @var array Opciones */
-    private $config;
-
-    /** @var \GuzzleHttp\Client El cliente HTTP */
-    private $client;
+    private array $config;
+    private HttpClient $client;
+    private RequestFactoryInterface $requestFactory;
+    private UriFactoryInterface $uriFactory;
 
     /**
      * Crea una instancia de la clase.
      *
-     * @param array $config Opciones de configuración.
+     * @param  array  $config  Opciones de configuración.
+     * @param  HttpClient|null  $cliente  El cliente HTTP.
      */
-    public function __construct(array $config = [])
+    public function __construct($config = [], ?HttpClient $cliente = null)
     {
-        if (!isset($config['token'])) {
-            throw new \InvalidArgumentException('Se debe indicar el token');
-        }
-
         $this->configurarOpciones($config);
-        $this->client = new Client([
-            'base_uri' => $this->config['url'],
-            'headers' => [
-                'User-Agent' => 'Xint0\BanxicoPHP 0.1.0',
-                'Accept' => 'application/json',
-                'Bmx-Token' => $this->config['token'],
-            ],
-            'timeout' => 2.0,
-        ]);
+        $this->client = $cliente ?? HttpClientFactory::create($config['token']);
+        $this->requestFactory = Psr17FactoryDiscovery::findRequestFactory();
+        $this->uriFactory = Psr17FactoryDiscovery::findUriFactory();
     }
 
     public function __call($method, $args)
@@ -51,7 +46,7 @@ class Cliente
         if (substr($method, 0, 7) === 'obtener') {
             $series = self::getSeries(substr($method, 7));
         } else {
-            throw new \RuntimeException("El método '{$method}' no existe.");
+            throw new RuntimeException("El método '{$method}' no existe.");
         }
 
         $parameterCount = count($args);
@@ -91,22 +86,20 @@ class Cliente
      * @param string $series
      * @param string $startDate
      * @param string $endDate
-     * @return string
+     * @return ResponseInterface
+     * @throws \Http\Client\Exception
      */
     private function sendRequest(string $series, string $startDate, string $endDate)
     {
         $uri = "series/{$series}/datos/{$startDate}" . ($startDate != 'oportuno' ? ($endDate == 'oportuno' ? "/$startDate" : "/$endDate") : '');
-        $request = new Request('GET', $uri);
-        return $this->client->send($request, [
-            'debug' => false
-        ]);
+        $uri = $this->uriFactory->createUri($this->config['url'] . $uri);
+        $request = $this->requestFactory->createRequest('GET', $uri);
+        return $this->client->sendRequest($request);
     }
 
-    private static function processResponse(\Psr\Http\Message\ResponseInterface $response)
+    private static function processResponse(ResponseInterface $response)
     {
         $statusCode = $response->getStatusCode();
-        $reasonPhrase = $response->getReasonPhrase();
-        $protocolVersion = $response->getProtocolVersion();
 
         if ($statusCode == 200) {
             $body = $response->getBody();
@@ -123,6 +116,7 @@ class Cliente
             $data = json_decode($body);
             $series = [];
             $itemCount = 0;
+            $lastItem = null;
             foreach($data->bmx->series as $serie) {
                 $series[$serie->idSerie] = [];
                 foreach($serie->datos as $dato) {
@@ -146,7 +140,7 @@ class Cliente
 
     /**
      * Interpreta una cadena de caracteres como una fecha y devuelve la fecha
-     * en formato AAAA-MM-DD
+     * en formato `AAAA-MM-DD`
      *
      * @param string $cadena
      * @return string
@@ -171,7 +165,7 @@ class Cliente
     private static function getSeries(string $nombre)
     {
         if (!array_key_exists($nombre, self::MAPA_SERIES)) {
-            throw new \InvalidArgumentException("La serie '{$nombre}' no está definida");
+            throw new InvalidArgumentException("La serie '{$nombre}' no está definida");
         }
 
         return self::MAPA_SERIES[$nombre];
