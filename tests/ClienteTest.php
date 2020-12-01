@@ -16,8 +16,10 @@ use PHPUnit\Framework\TestCase;
 
 final class ClienteTest extends TestCase
 {
-    private const JSON_PATH_SF60653_LATEST = __DIR__ . '/data/SF60653_latest.json';
+    private const JSON_PATH_SF43718_DATE_RANGE = __DIR__ . '/data/SF43718_date_range.json';
     private const JSON_PATH_SF43718_LATEST = __DIR__ . '/data/SF43718_latest.json';
+    private const JSON_PATH_SF60653_DATE_RANGE = __DIR__ . '/data/SF60653_date_range.json';
+    private const JSON_PATH_SF60653_LATEST = __DIR__ . '/data/SF60653_latest.json';
 
     protected function setUp(): void
     {
@@ -60,6 +62,70 @@ final class ClienteTest extends TestCase
                     'result' => '20.0777',
                 ],
             ],
+            'tipo de cambio usd pagos rango de fechas' => [
+                'testData' => [
+                    'method' => 'obtenerTipoDeCambioUSDPagos',
+                    'params' => [
+                        '2020-11-26',
+                        '2020-11-27',
+                    ],
+                ],
+                'finalState' => [
+                    'series' => 'SF60653',
+                    'uriSuffix' => '2020-11-26/2020-11-27',
+                    'result' => [
+                        'SF60653' => [
+                            '26/11/2020' => '20.0577',
+                            '27/11/2020' => '20.0465',
+                        ],
+                    ],
+                ],
+            ],
+            'tipo de cambio usd fix rango de fechas' => [
+                'testData' => [
+                    'method' => 'obtenerTipoDeCambioUSDFix',
+                    'params' => [
+                        '2020-11-26',
+                        '2020-11-27',
+                    ],
+                ],
+                'finalState' => [
+                    'series' => 'SF43718',
+                    'uriSuffix' => '2020-11-26/2020-11-27',
+                    'result' => [
+                        'SF43718' => [
+                            '26/11/2020' => '20.0467',
+                            '27/11/2020' => '20.0777',
+                        ],
+                    ],
+                ],
+            ],
+            'tipo de cambio usd pagos un día' => [
+                'testData' => [
+                    'method' => 'obtenerTipoDeCambioUSDPagos',
+                    'params' => [
+                        '2020-12-01',
+                    ],
+                ],
+                'finalState' => [
+                    'series' => 'SF60653',
+                    'uriSuffix' => '2020-12-01/2020-12-01',
+                    'result' => '20.0777',
+                ],
+            ],
+            'tipo de cambio usd fix un día' => [
+                'testData' => [
+                    'method' => 'obtenerTipoDeCambioUSDFix',
+                    'params' => [
+                        '2020-11-27',
+                    ],
+                ],
+                'finalState' => [
+                    'series' => 'SF43718',
+                    'uriSuffix' => '2020-11-27/2020-11-27',
+                    'result' => '20.0777',
+                ],
+            ],
         ];
     }
 
@@ -72,7 +138,8 @@ final class ClienteTest extends TestCase
     public function test_makes_expected_request(array $testData, array $finalState): void
     {
         $expectedSeries = $finalState['series'];
-        $expectedUri = "https://www.banxico.org.mx/SieAPIRest/service/v1/series/{$expectedSeries}/datos/oportuno";
+        $expectedUriSuffix = $finalState['uriSuffix'] ?? 'oportuno';
+        $expectedUri = "https://www.banxico.org.mx/SieAPIRest/service/v1/series/${expectedSeries}/datos/${expectedUriSuffix}";
         $expectedHeaders = [
             'User-Agent' => [ 'Xint0 BanxicoPHP/0.2.0' ],
             'Accept' => [ 'application/json' ],
@@ -103,21 +170,66 @@ final class ClienteTest extends TestCase
         $mockHttpClient = new MockHttpClient();
         $this->mockHttpClientResponse(
             $mockHttpClient,
-            'SF60653',
-            file_get_contents(static::JSON_PATH_SF60653_LATEST)
+            [
+                'series' => 'SF60653',
+                'body' => file_get_contents(static::JSON_PATH_SF60653_LATEST),
+                'startDate' => 'oportuno',
+            ]
         );
         $this->mockHttpClientResponse(
             $mockHttpClient,
-            'SF43718',
-            file_get_contents(static::JSON_PATH_SF43718_LATEST)
+            [
+                'series' => 'SF43718',
+                'body' => file_get_contents(static::JSON_PATH_SF43718_LATEST),
+                'startDate' => 'oportuno',
+            ]
+        );
+        $this->mockHttpClientResponse(
+            $mockHttpClient,
+            [
+                'series' => 'SF43718',
+                'body' => file_get_contents(static::JSON_PATH_SF43718_DATE_RANGE),
+                'startDate' => '2020-11-26',
+                'endDate' => '2020-11-27',
+            ]
+        );
+        $this->mockHttpClientResponse(
+            $mockHttpClient,
+            [
+                'series' => 'SF60653',
+                'body' => file_get_contents(static::JSON_PATH_SF60653_DATE_RANGE),
+                'startDate' => '2020-11-26',
+                'endDate' => '2020-11-27',
+            ]
+        );
+        $this->mockHttpClientResponse(
+            $mockHttpClient,
+            [
+                'series' => 'SF43718',
+                'body' => file_get_contents(static::JSON_PATH_SF43718_LATEST),
+                'startDate' => '2020-11-27',
+            ]
+        );
+        $this->mockHttpClientResponse(
+            $mockHttpClient,
+            [
+                'series' => 'SF60653',
+                'body' => file_get_contents(static::JSON_PATH_SF60653_LATEST),
+                'startDate' => '2020-12-01',
+            ]
         );
         return $mockHttpClient;
     }
 
-    private function mockHttpClientResponse(MockHttpClient $mockHttpClient, string $series, string $body): void
+    private function mockHttpClientResponse(MockHttpClient $mockHttpClient, array $params): void
     {
+        $series = $params['series'];
+        $body = $params['body'] ?? '';
+        $startDate = $params['startDate'] ?? 'oportuno';
+        $endDate = $params['endDate'] ?? $startDate;
+        $suffix = $startDate . ($startDate === 'oportuno' ? '' : ($endDate === 'oportuno' ? '' : "\/${endDate}"));
         $requestMatcher = new RequestMatcher(
-            "\/SieAPIRest\/service\/v1\/series\/${series}\/datos\/oportuno$",
+            "\/SieAPIRest\/service\/v1\/series\/${series}\/datos\/${suffix}$",
             'www.banxico.org.mx',
             'GET',
             'https'
