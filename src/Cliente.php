@@ -19,7 +19,9 @@ class Cliente
 {
     private const MAPA_SERIES = [
         'TipoDeCambioUsdPagos' => 'SF60653',
-        'TipoDeCambioUsdFix' => 'SF43718'
+        'TipoDeCambioUsdFix' => 'SF43718',
+        'TipoDeCambioUSDPagos' => 'SF60653',
+        'TipoDeCambioUSDFix' => 'SF43718',
     ];
 
     private array $config;
