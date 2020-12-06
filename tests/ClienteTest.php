@@ -6,7 +6,7 @@ namespace Xint0\BanxicoPHP\Tests;
 
 use Http\Discovery\ClassDiscovery;
 use Xint0\BanxicoPHP\Cliente;
-use Http\Client\HttpClient;
+use Psr\Http\Client\ClientInterface;
 use Xint0\BanxicoPHP\HttpClientFactory;
 use Http\Discovery\Strategy\MockClientStrategy;
 use Http\Mock\Client as MockHttpClient;
@@ -165,7 +165,7 @@ final class ClienteTest extends TestCase
         $this->assertEquals($finalState['result'], $result);
     }
 
-    private function mockHttpClient(): HttpClient
+    private function mockHttpClient(): ClientInterface
     {
         $mockHttpClient = new MockHttpClient();
         $this->mockHttpClientResponse(
