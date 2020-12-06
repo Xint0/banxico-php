@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Xint0\BanxicoPHP;
 
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
 use Exception;
-use Http\Client\HttpClient;
 use InvalidArgumentException;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -25,7 +28,7 @@ class Cliente
     ];
 
     private array $config;
-    private HttpClient $client;
+    private ClientInterface $client;
     private RequestFactoryInterface $requestFactory;
     private UriFactoryInterface $uriFactory;
 
@@ -33,9 +36,9 @@ class Cliente
      * Crea una instancia de la clase.
      *
      * @param  array  $config  Opciones de configuración.
-     * @param  HttpClient|null  $cliente  El cliente HTTP.
+     * @param  ClientInterface|null  $cliente  El cliente HTTP.
      */
-    public function __construct($config = [], ?HttpClient $cliente = null)
+    public function __construct($config = [], ?ClientInterface $cliente = null)
     {
         $this->configurarOpciones($config);
         $this->client = $cliente ?? HttpClientFactory::create($config['token']);
@@ -85,13 +88,15 @@ class Cliente
     /**
      * Sends the HTTP request to the SIE API end-point.
      *
-     * @param string $series
-     * @param string $startDate
-     * @param string $endDate
+     * @param  string  $series
+     * @param  string  $startDate
+     * @param  string  $endDate
+     *
      * @return ResponseInterface
-     * @throws \Http\Client\Exception
+     *
+     * @throws ClientExceptionInterface
      */
-    private function sendRequest(string $series, string $startDate, string $endDate)
+    private function sendRequest(string $series, string $startDate, string $endDate): ResponseInterface
     {
         $uri = "series/{$series}/datos/{$startDate}" . ($startDate != 'oportuno' ? ($endDate == 'oportuno' ? "/$startDate" : "/$endDate") : '');
         $uri = $this->uriFactory->createUri($this->config['url'] . $uri);
@@ -105,7 +110,7 @@ class Cliente
 
         if ($statusCode == 200) {
             $body = $response->getBody();
-            return self::parseResponseBody($body);
+            return self::parseResponseBody((string)$body);
         } else {
             return false;
         }

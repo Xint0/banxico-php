@@ -3,9 +3,9 @@
 namespace Xint0\BanxicoPHP;
 
 use Http\Client\Common\Plugin\AuthenticationPlugin;
+use Psr\Http\Client\ClientInterface;
 use Http\Message\Authentication\Header;
 use Http\Client\Common\Plugin\HeaderSetPlugin;
-use Http\Client\HttpClient;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Client\Common\PluginClient;
 
@@ -16,11 +16,11 @@ class HttpClientFactory
      *
      * @param  string  $token  Token de autenticación de la API REST Banxico.
      * @param  array  $plugins  Lista de plugins del cliente HTTP.
-     * @param  HttpClient|null  $httpClient  El cliente HTTP base.
+     * @param  ClientInterface|null  $httpClient  El cliente HTTP base.
      *
-     * @return HttpClient
+     * @return ClientInterface
      */
-    public static function create(string $token, array $plugins = [], HttpClient $httpClient = null): HttpClient
+    public static function create(string $token, array $plugins = [], ClientInterface $httpClient = null): ClientInterface
     {
         if (! $httpClient) {
             $httpClient = HttpClientDiscovery::find();
