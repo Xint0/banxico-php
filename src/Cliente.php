@@ -149,10 +149,11 @@ class Cliente
      * Interpreta una cadena de caracteres como una fecha y devuelve la fecha
      * en formato `AAAA-MM-DD`
      *
-     * @param string $cadena
+     * @param  string  $cadena
+     *
      * @return string
      */
-    private static function normalizeDate(string $cadena)
+    private static function normalizeDate(string $cadena): string
     {
         $result = 'oportuno';
         $fecha = date_create($cadena);
@@ -166,10 +167,11 @@ class Cliente
     /**
      * Obtiene el identificador de la serie a partir del nombre.
      *
-     * @param string $nombre
+     * @param  string  $nombre
+     *
      * @return string
      */
-    private static function getSeries(string $nombre)
+    private static function getSeries(string $nombre): string
     {
         if (!array_key_exists($nombre, self::MAPA_SERIES)) {
             throw new InvalidArgumentException("La serie '{$nombre}' no está definida");
