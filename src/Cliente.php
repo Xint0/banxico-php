@@ -7,25 +7,16 @@ namespace Xint0\BanxicoPHP;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Exception;
-use InvalidArgumentException;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Psr\Http\Message\UriFactoryInterface;
 
-/**
- * @method string obtenerTipoDeCambioUsdPagos(string $fechaInicio = null, string $fechaFinal = null)
- * @method string obtenerTipoDeCambioUsdFix(string $fechaInicio = null, string $fechaFinal = null)
- */
 class Cliente
 {
-    private const MAPA_SERIES = [
-        'TipoDeCambioUsdPagos' => 'SF60653',
-        'TipoDeCambioUsdFix' => 'SF43718',
-        'TipoDeCambioUSDPagos' => 'SF60653',
-        'TipoDeCambioUSDFix' => 'SF43718',
-    ];
+    private const SERIES_FIX_USD_EXCHANGE_RATE = 'SF43718';
+    private const SERIES_PAYMENTS_USD_EXCHANGE_RATE = 'SF60653';
 
     private array $config;
     private ClientInterface $client;
@@ -40,49 +31,72 @@ class Cliente
      */
     public function __construct($config = [], ?ClientInterface $cliente = null)
     {
-        $this->configurarOpciones($config);
+        $this->config = $this->initialConfiguration($config);
         $this->client = $cliente ?? HttpClientFactory::create($config['token']);
         $this->requestFactory = Psr17FactoryDiscovery::findRequestFactory();
         $this->uriFactory = Psr17FactoryDiscovery::findUriFactory();
     }
 
-    public function __call($method, $args)
+    /**
+     * Devuelve la serie de datos indicada.
+     *
+     * @param  string  $series
+     * @param  string|null  $startDate
+     * @param  string|null  $endDate
+     *
+     * @return array|false|null
+     */
+    public function obtenerSerie(string $series, ?string $startDate = null, ?string $endDate = null)
     {
-        if (substr($method, 0, 7) === 'obtener') {
-            $series = self::getSeries(substr($method, 7));
-        } else {
-            throw new RuntimeException("El método '{$method}' no existe.");
+        $normalizedStartDate = self::normalizeDate($startDate) ?? 'oportuno';
+        $normalizedEndDate = self::normalizeDate($endDate) ?? 'oportuno';
+        try {
+            return self::processResponse($this->sendRequest($series, $normalizedStartDate, $normalizedEndDate));
+        } catch (ClientExceptionInterface $clientException) {
+            throw new RuntimeException('HTTP request failed.', 0, $clientException);
         }
+    }
 
-        $parameterCount = count($args);
-        $startDate = null;
-        $endDate = null;
-        if ($parameterCount < 1) {
-            $startDate = 'oportuno';
-            $endDate = 'oportuno';
-        } elseif ($parameterCount == 1) {
-            $startDate = self::normalizeDate($args[0]);
-            $endDate = 'oportuno';
-        } else {
-            $startDate = self::normalizeDate($args[0]);
-            $endDate = self::normalizeDate($args[1]);
-        }
+    /**
+     * Devuelve el tipo de cambio para pagos denominados en dólares estadounidenses.
+     *
+     * @param  string|null  $fechaInicio
+     * @param  string|null  $fechaFinal
+     *
+     * @return array|false|null
+     */
+    public function obtenerTipoDeCambioUsdPagos(?string $fechaInicio = null, ?string $fechaFinal = null)
+    {
+        return $this->obtenerSerie(self::SERIES_PAYMENTS_USD_EXCHANGE_RATE, $fechaInicio, $fechaFinal);
+    }
 
-        return self::processResponse($this->sendRequest($series, $startDate, $endDate));
+    /**
+     * Devuelve el tipo de cambio fix pesos por dólar estadounidense.
+     *
+     * @param  string|null  $fechaInicio
+     * @param  string|null  $fechaFinal
+     *
+     * @return array|false|null
+     */
+    public function obtenerTipoDeCambioUsdFix(?string $fechaInicio = null, ?string $fechaFinal = null)
+    {
+        return $this->obtenerSerie(self::SERIES_FIX_USD_EXCHANGE_RATE, $fechaInicio, $fechaFinal);
     }
 
     /**
      * Configura las opciones del cliente.
      *
-     * @param array $config
+     * @param  array  $config
+     *
+     * @return array
      */
-    private function configurarOpciones(array $config)
+    private function initialConfiguration(array $config): array
     {
         $defaults = [
             'url' => 'https://www.banxico.org.mx/SieAPIRest/service/v1/'
         ];
 
-        $this->config = $config + $defaults;
+        return $config + $defaults;
     }
 
     /**
@@ -146,37 +160,19 @@ class Cliente
     }
 
     /**
-     * Interpreta una cadena de caracteres como una fecha y devuelve la fecha
-     * en formato `AAAA-MM-DD`
+     * Normalize input string as date using `YYYY-MM-DD` format. If parsing fails returns `null`.
      *
-     * @param  string  $cadena
+     * @param  string|null  $input
      *
-     * @return string
+     * @return string|null
      */
-    private static function normalizeDate(string $cadena): string
+    private static function normalizeDate(?string $input): ?string
     {
-        $result = 'oportuno';
-        $fecha = date_create($cadena);
-        if ($fecha !== false) {
-            $result = date_format($fecha, 'Y-m-d');
+        if ($input === null) {
+            return null;
         }
 
-        return $result;
-    }
-
-    /**
-     * Obtiene el identificador de la serie a partir del nombre.
-     *
-     * @param  string  $nombre
-     *
-     * @return string
-     */
-    private static function getSeries(string $nombre): string
-    {
-        if (!array_key_exists($nombre, self::MAPA_SERIES)) {
-            throw new InvalidArgumentException("La serie '{$nombre}' no está definida");
-        }
-
-        return self::MAPA_SERIES[$nombre];
+        $date = date_create($input);
+        return $date !== false ? date_format($date, 'Y-m-d') : null;
     }
 }
