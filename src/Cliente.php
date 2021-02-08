@@ -7,10 +7,8 @@ namespace Xint0\BanxicoPHP;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Exception;
-use Http\Discovery\Psr17FactoryDiscovery;
-use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriFactoryInterface;
+use Xint0\BanxicoPHP\Factories\RequestFactory;
 
 class Cliente
 {
@@ -19,8 +17,6 @@ class Cliente
 
     private array $config;
     private ClientInterface $client;
-    private RequestFactoryInterface $requestFactory;
-    private UriFactoryInterface $uriFactory;
 
     /**
      * Crea una instancia de la clase.
@@ -32,8 +28,6 @@ class Cliente
     {
         $this->config = $this->initialConfiguration($config);
         $this->client = $cliente ?? HttpClientFactory::create($config['token']);
-        $this->requestFactory = Psr17FactoryDiscovery::findRequestFactory();
-        $this->uriFactory = Psr17FactoryDiscovery::findUriFactory();
     }
 
     /**
@@ -49,10 +43,11 @@ class Cliente
      */
     public function obtenerSerie(string $series, ?string $startDate = null, ?string $endDate = null)
     {
-        $normalizedStartDate = self::normalizeDate($startDate) ?? 'oportuno';
-        $normalizedEndDate = self::normalizeDate($endDate) ?? 'oportuno';
+        $requestFactory = new RequestFactory($this->config['url']);
+        $request = $requestFactory->createRequest($series, $startDate, $endDate);
         try {
-            return self::processResponse($this->sendRequest($series, $normalizedStartDate, $normalizedEndDate));
+            $response = $this->client->sendRequest($request);
+            return self::processResponse($response);
         } catch (ClientExceptionInterface $clientException) {
             throw new ClienteBanxicoException('HTTP request failed.', 0, $clientException);
         }
@@ -98,29 +93,10 @@ class Cliente
     private function initialConfiguration(array $config): array
     {
         $defaults = [
-            'url' => 'https://www.banxico.org.mx/SieAPIRest/service/v1/'
+            'url' => 'https://www.banxico.org.mx/SieAPIRest/service/v1'
         ];
 
         return $config + $defaults;
-    }
-
-    /**
-     * Sends the HTTP request to the SIE API end-point.
-     *
-     * @param  string  $series
-     * @param  string  $startDate
-     * @param  string  $endDate
-     *
-     * @return ResponseInterface
-     *
-     * @throws ClientExceptionInterface
-     */
-    private function sendRequest(string $series, string $startDate, string $endDate): ResponseInterface
-    {
-        $uri = "series/{$series}/datos/{$startDate}" . ($startDate != 'oportuno' ? ($endDate == 'oportuno' ? "/$startDate" : "/$endDate") : '');
-        $uri = $this->uriFactory->createUri($this->config['url'] . $uri);
-        $request = $this->requestFactory->createRequest('GET', $uri);
-        return $this->client->sendRequest($request);
     }
 
     private static function processResponse(ResponseInterface $response)
@@ -162,22 +138,5 @@ class Cliente
         {
             return false;
         }
-    }
-
-    /**
-     * Normalize input string as date using `YYYY-MM-DD` format. If parsing fails returns `null`.
-     *
-     * @param  string|null  $input
-     *
-     * @return string|null
-     */
-    private static function normalizeDate(?string $input): ?string
-    {
-        if ($input === null) {
-            return null;
-        }
-
-        $date = date_create($input);
-        return $date !== false ? date_format($date, 'Y-m-d') : null;
     }
 }
