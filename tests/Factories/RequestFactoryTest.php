@@ -25,7 +25,7 @@ class RequestFactoryTest extends TestCase
             ],
             'single date' => [
                 'initial_state' => [
-                    'http://www.example.com/',
+                    'http://www.example.com',
                 ],
                 'params' => [
                     'SF60653',
@@ -34,7 +34,7 @@ class RequestFactoryTest extends TestCase
                 'final_state' => [
                     'expected_scheme' => 'http',
                     'expected_host' => 'www.example.com',
-                    'expected_path' => '/SF60653/datos/2020-12-01/2020-12-01',
+                    'expected_path' => '/series/SF60653/datos/2020-12-01/2020-12-01',
                 ],
             ],
             'date range' => [
