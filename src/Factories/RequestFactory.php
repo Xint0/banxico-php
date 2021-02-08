@@ -18,13 +18,13 @@ class RequestFactory
     /**
      * RequestFactory constructor.
      *
-     * If `$baseUri` is not specified the default value is `https://www.banxico.org.mx/SieAPIRest/service/v1/series/`.
+     * If `$baseUri` is not specified the default value is `https://www.banxico.org.mx/SieAPIRest/service/v1`.
      *
      * @param  string|null  $baseUri
      */
     public function __construct(?string $baseUri = null)
     {
-        $this->baseUri = $baseUri ?? 'https://www.banxico.org.mx/SieAPIRest/service/v1/series/';
+        $this->baseUri = $baseUri ?? 'https://www.banxico.org.mx/SieAPIRest/service/v1';
         $this->psrRequestFactory = Psr17FactoryDiscovery::findRequestFactory();
         $this->psrUriFactory = Psr17FactoryDiscovery::findUriFactory();
     }
@@ -47,7 +47,7 @@ class RequestFactory
                 );
         }
 
-        $uri = $this->psrUriFactory->createUri("{$this->baseUri}${series}/datos/${suffix}");
+        $uri = $this->psrUriFactory->createUri("{$this->baseUri}/series/${series}/datos/${suffix}");
         return $this->psrRequestFactory->createRequest('GET', $uri);
     }
 
