@@ -8,6 +8,7 @@ use Http\Client\Exception\NetworkException;
 use Http\Discovery\ClassDiscovery;
 use Psr\Http\Message\RequestInterface;
 use Xint0\BanxicoPHP\Cliente;
+use Xint0\BanxicoPHP\ClienteBanxicoException;
 use Psr\Http\Client\ClientInterface;
 use Xint0\BanxicoPHP\HttpClientFactory;
 use Http\Discovery\Strategy\MockClientStrategy;
@@ -278,7 +279,7 @@ final class ClienteTest extends TestCase
 
     public function test_throws_expected_exception_on_http_client_exception(): void
     {
-        $this->expectException(BanxicoClienteException::class);
+        $this->expectException(ClienteBanxicoException::class);
         $httpClient = HttpClientFactory::create('test-token', [], $this->mockHttpClient());
         $sut = new Cliente([ 'token' => 'test-token' ], $httpClient);
         $sut->obtenerTipoDeCambioUsdPagos('1700-01-01');
