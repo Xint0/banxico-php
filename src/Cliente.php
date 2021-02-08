@@ -44,6 +44,8 @@ class Cliente
      * @param  string|null  $endDate
      *
      * @return array|false|null
+     *
+     * @throws ClienteBanxicoException
      */
     public function obtenerSerie(string $series, ?string $startDate = null, ?string $endDate = null)
     {
@@ -63,6 +65,8 @@ class Cliente
      * @param  string|null  $fechaFinal
      *
      * @return array|false|null
+     *
+     * @throws ClienteBanxicoException
      */
     public function obtenerTipoDeCambioUsdPagos(?string $fechaInicio = null, ?string $fechaFinal = null)
     {
@@ -76,6 +80,8 @@ class Cliente
      * @param  string|null  $fechaFinal
      *
      * @return array|false|null
+     *
+     * @throws ClienteBanxicoException
      */
     public function obtenerTipoDeCambioUsdFix(?string $fechaInicio = null, ?string $fechaFinal = null)
     {
