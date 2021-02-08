@@ -10,7 +10,6 @@ use Exception;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
-use RuntimeException;
 use Psr\Http\Message\UriFactoryInterface;
 
 class Cliente
@@ -53,7 +52,7 @@ class Cliente
         try {
             return self::processResponse($this->sendRequest($series, $normalizedStartDate, $normalizedEndDate));
         } catch (ClientExceptionInterface $clientException) {
-            throw new RuntimeException('HTTP request failed.', 0, $clientException);
+            throw new ClienteBanxicoException('HTTP request failed.', 0, $clientException);
         }
     }
 
