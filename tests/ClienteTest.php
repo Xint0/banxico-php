@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP\Tests;
 
+use Http\Client\Exception\NetworkException;
 use Http\Discovery\ClassDiscovery;
+use Psr\Http\Message\RequestInterface;
 use Xint0\BanxicoPHP\Cliente;
 use Psr\Http\Client\ClientInterface;
 use Xint0\BanxicoPHP\HttpClientFactory;
@@ -50,7 +52,7 @@ final class ClienteTest extends TestCase
                 ],
                 'finalState' => [
                     'series' => 'SF60653',
-                    'result' => '20.0777',
+                    'uriSuffix' => 'oportuno',
                 ],
             ],
             'tipo de cambio usd fix' => [
@@ -59,7 +61,7 @@ final class ClienteTest extends TestCase
                 ],
                 'finalState' => [
                     'series' => 'SF43718',
-                    'result' => '20.0777',
+                    'uriSuffix' => 'oportuno',
                 ],
             ],
             'tipo de cambio usd pagos rango de fechas' => [
@@ -73,12 +75,6 @@ final class ClienteTest extends TestCase
                 'finalState' => [
                     'series' => 'SF60653',
                     'uriSuffix' => '2020-11-26/2020-11-27',
-                    'result' => [
-                        'SF60653' => [
-                            '26/11/2020' => '20.0577',
-                            '27/11/2020' => '20.0465',
-                        ],
-                    ],
                 ],
             ],
             'tipo de cambio usd fix rango de fechas' => [
@@ -92,12 +88,6 @@ final class ClienteTest extends TestCase
                 'finalState' => [
                     'series' => 'SF43718',
                     'uriSuffix' => '2020-11-26/2020-11-27',
-                    'result' => [
-                        'SF43718' => [
-                            '26/11/2020' => '20.0467',
-                            '27/11/2020' => '20.0777',
-                        ],
-                    ],
                 ],
             ],
             'tipo de cambio usd pagos un día' => [
@@ -110,7 +100,6 @@ final class ClienteTest extends TestCase
                 'finalState' => [
                     'series' => 'SF60653',
                     'uriSuffix' => '2020-12-01/2020-12-01',
-                    'result' => '20.0777',
                 ],
             ],
             'tipo de cambio usd fix un día' => [
@@ -123,7 +112,18 @@ final class ClienteTest extends TestCase
                 'finalState' => [
                     'series' => 'SF43718',
                     'uriSuffix' => '2020-11-27/2020-11-27',
-                    'result' => '20.0777',
+                ],
+            ],
+            'obtener serie SF60653 oportuno' => [
+                'testData' => [
+                    'method' => 'obtenerSerie',
+                    'params' => [
+                        'SF60653',
+                    ],
+                ],
+                'finalState' => [
+                    'series' => 'SF60653',
+                    'uriSuffix' => 'oportuno',
                 ],
             ],
         ];
@@ -154,7 +154,7 @@ final class ClienteTest extends TestCase
 
         $method = $testData['method'];
         $params = $testData['params'] ?? [];
-        $result = call_user_func([$sut, $method], ...$params);
+        $sut->{$method}(...$params);
 
         $requests = $mockHttpClient->getRequests();
         $this->assertCount(1, $requests);
@@ -162,7 +162,126 @@ final class ClienteTest extends TestCase
         $this->assertEquals('GET', $request->getMethod());
         $this->assertEquals($expectedUri, (string)$request->getUri());
         $this->assertEquals($expectedHeaders, $request->getHeaders());
+    }
+
+    public function obtenerTipoDeCambioUsdPagosProvider(): array
+    {
+        return [
+            'oportuno' => [
+                'testData' => [
+                    'params' => [],
+                ],
+                'finalState' => [
+                    'result' => '20.0777',
+                ],
+            ],
+            'rango de fechas' => [
+                'testData' => [
+                    'params' => [
+                        '2020-11-26',
+                        '2020-11-27',
+                    ],
+                ],
+                'finalState' => [
+                    'result' => [
+                        'SF60653' => [
+                            '26/11/2020' => '20.0577',
+                            '27/11/2020' => '20.0465',
+                        ],
+                    ],
+                ],
+            ],
+            'un día' => [
+                'testData' => [
+                    'params' => [
+                        '2020-12-01',
+                    ],
+                ],
+                'finalState' => [
+                    'result' => '20.0777',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider obtenerTipoDeCambioUsdPagosProvider
+     *
+     * @param  array  $testData
+     * @param  array  $finalState
+     */
+    public function test_obtener_tipo_de_cambio_usd_pagos_method_returns_expected_result(array $testData, array $finalState): void
+    {
+        $mockHttpClient = $this->mockHttpClient();
+        $httpClient = HttpClientFactory::create('test-token', [], $mockHttpClient);
+        $sut = new Cliente([ 'token' => 'test-token' ], $httpClient);
+        $params = $testData['params'] ?? [];
+        $result = $sut->obtenerTipoDeCambioUsdPagos(...$params);
         $this->assertEquals($finalState['result'], $result);
+    }
+
+    public function obtenerTipoDeCambioUsdFixProvider(): array
+    {
+        return [
+            'oportuno' => [
+                'testData' => [
+                    'params' => [],
+                ],
+                'finalState' => [
+                    'result' => '20.0777',
+                ],
+            ],
+            'rango de fechas' => [
+                'testData' => [
+                    'params' => [
+                        '2020-11-26',
+                        '2020-11-27',
+                    ],
+                ],
+                'finalState' => [
+                    'result' => [
+                        'SF43718' => [
+                            '26/11/2020' => '20.0467',
+                            '27/11/2020' => '20.0777',
+                        ],
+                    ],
+                ],
+            ],
+            'un día' => [
+                'testData' => [
+                    'params' => [
+                        '2020-11-27',
+                    ],
+                ],
+                'finalState' => [
+                    'result' => '20.0777',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider obtenerTipoDeCambioUsdFixProvider
+     *
+     * @param  array  $testData
+     * @param  array  $finalState
+     */
+    public function test_obtener_tipo_de_cambio_usd_fix_method_returns_expected_result(array $testData, array $finalState): void
+    {
+        $mockHttpClient = $this->mockHttpClient();
+        $httpClient = HttpClientFactory::create('test-token', [], $mockHttpClient);
+        $sut = new Cliente([ 'token' => 'test-token' ], $httpClient);
+        $params = $testData['params'] ?? [];
+        $result = $sut->obtenerTipoDeCambioUsdFix(...$params);
+        $this->assertEquals($finalState['result'], $result);
+    }
+
+    public function test_throws_expected_exception_on_http_client_exception(): void
+    {
+        $this->expectException(BanxicoClienteException::class);
+        $httpClient = HttpClientFactory::create('test-token', [], $this->mockHttpClient());
+        $sut = new Cliente([ 'token' => 'test-token' ], $httpClient);
+        $sut->obtenerTipoDeCambioUsdPagos('1700-01-01');
     }
 
     private function mockHttpClient(): ClientInterface
@@ -172,7 +291,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF60653',
-                'body' => file_get_contents(static::JSON_PATH_SF60653_LATEST),
+                'body' => file_get_contents(ClienteTest::JSON_PATH_SF60653_LATEST),
                 'startDate' => 'oportuno',
             ]
         );
@@ -180,7 +299,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF43718',
-                'body' => file_get_contents(static::JSON_PATH_SF43718_LATEST),
+                'body' => file_get_contents(ClienteTest::JSON_PATH_SF43718_LATEST),
                 'startDate' => 'oportuno',
             ]
         );
@@ -188,7 +307,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF43718',
-                'body' => file_get_contents(static::JSON_PATH_SF43718_DATE_RANGE),
+                'body' => file_get_contents(ClienteTest::JSON_PATH_SF43718_DATE_RANGE),
                 'startDate' => '2020-11-26',
                 'endDate' => '2020-11-27',
             ]
@@ -197,7 +316,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF60653',
-                'body' => file_get_contents(static::JSON_PATH_SF60653_DATE_RANGE),
+                'body' => file_get_contents(ClienteTest::JSON_PATH_SF60653_DATE_RANGE),
                 'startDate' => '2020-11-26',
                 'endDate' => '2020-11-27',
             ]
@@ -206,7 +325,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF43718',
-                'body' => file_get_contents(static::JSON_PATH_SF43718_LATEST),
+                'body' => file_get_contents(ClienteTest::JSON_PATH_SF43718_LATEST),
                 'startDate' => '2020-11-27',
             ]
         );
@@ -214,10 +333,11 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF60653',
-                'body' => file_get_contents(static::JSON_PATH_SF60653_LATEST),
+                'body' => file_get_contents(ClienteTest::JSON_PATH_SF60653_LATEST),
                 'startDate' => '2020-12-01',
             ]
         );
+        $this->mockHttpClientException($mockHttpClient);
         return $mockHttpClient;
     }
 
@@ -238,5 +358,17 @@ final class ClienteTest extends TestCase
         $mockResponse->method('getBody')->willReturn($body);
         $mockResponse->method('getStatusCode')->willReturn(200);
         $mockHttpClient->on($requestMatcher, $mockResponse);
+    }
+
+    private function mockHttpClientException(MockHttpClient $mockHttpClient): void
+    {
+        $requestMatcher = new RequestMatcher(
+            '/SieAPIRest/service/v1/series/.+/datos/1700-01-01',
+            'www.banxico.org.mx',
+            'GET',
+            'https'
+        );
+        $mockException = new NetworkException('Network error', $this->createMock(RequestInterface::class));
+        $mockHttpClient->on($requestMatcher, $mockException);
     }
 }
