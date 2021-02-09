@@ -6,8 +6,6 @@ namespace Xint0\BanxicoPHP;
 
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
-use Exception;
-use Psr\Http\Message\ResponseInterface;
 use Xint0\BanxicoPHP\Factories\HttpClientFactory;
 use Xint0\BanxicoPHP\Factories\RequestFactory;
 
@@ -48,10 +46,26 @@ class Cliente
         $request = $requestFactory->createRequest($series, $startDate, $endDate);
         try {
             $response = $this->client->sendRequest($request);
-            return self::processResponse($response);
         } catch (ClientExceptionInterface $clientException) {
             throw new ClienteBanxicoException('HTTP request failed.', 0, $clientException);
         }
+
+        $responseParser = new ResponseParser();
+        try {
+            $result = $responseParser->parse($response);
+        } catch (ClienteBanxicoException $clienteBanxicoException) {
+            if ($clienteBanxicoException->getCode() > 200) {
+                return false;
+            }
+        }
+
+        $key = array_key_first($result);
+        $result_count = count($result[$key]);
+        if ($result_count === 1) {
+            return $result[$key][array_key_first($result[$key])];
+        }
+
+        return $result;
     }
 
     /**
@@ -98,46 +112,5 @@ class Cliente
         ];
 
         return $config + $defaults;
-    }
-
-    private static function processResponse(ResponseInterface $response)
-    {
-        $statusCode = $response->getStatusCode();
-
-        if ($statusCode == 200) {
-            $body = $response->getBody();
-            return self::parseResponseBody((string)$body);
-        } else {
-            return false;
-        }
-    }
-
-    private static function parseResponseBody(string $body)
-    {
-        try
-        {
-            $data = json_decode($body);
-            $series = [];
-            $itemCount = 0;
-            $lastItem = null;
-            foreach($data->bmx->series as $serie) {
-                $series[$serie->idSerie] = [];
-                foreach($serie->datos as $dato) {
-                    $series[$serie->idSerie][$dato->fecha] = $dato->dato;
-                    $lastItem = $dato->dato;
-                    $itemCount++;
-                }
-            }
-
-            if ($itemCount == 1) {
-                return $lastItem;
-            }
-
-            return $series;
-        }
-        catch(Exception $e)
-        {
-            return false;
-        }
     }
 }
