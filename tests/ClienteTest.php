@@ -7,6 +7,7 @@ namespace Xint0\BanxicoPHP\Tests;
 use Http\Client\Exception\NetworkException;
 use Http\Discovery\ClassDiscovery;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Xint0\BanxicoPHP\Cliente;
 use Xint0\BanxicoPHP\ClienteBanxicoException;
 use Psr\Http\Client\ClientInterface;
@@ -288,11 +289,19 @@ final class ClienteTest extends TestCase
     private function mockHttpClient(): ClientInterface
     {
         $mockHttpClient = new MockHttpClient();
+        $streamSF60653LatestStub = $this->createStub(StreamInterface::class);
+        $streamSF60653LatestStub->method('getContents')->willReturn(file_get_contents(ClienteTest::JSON_PATH_SF60653_LATEST));
+        $streamSF60653DateRangeStub = $this->createStub(StreamInterface::class);
+        $streamSF60653DateRangeStub->method('getContents')->willReturn(file_get_contents(ClienteTest::JSON_PATH_SF60653_DATE_RANGE));
+        $streamSF43718LatestStub = $this->createStub(StreamInterface::class);
+        $streamSF43718LatestStub->method('getContents')->willReturn(file_get_contents(ClienteTest::JSON_PATH_SF43718_LATEST));
+        $streamSF43718DateRangeStub = $this->createStub(StreamInterface::class);
+        $streamSF43718DateRangeStub->method('getContents')->willReturn(file_get_contents(ClienteTest::JSON_PATH_SF43718_DATE_RANGE));
         $this->mockHttpClientResponse(
             $mockHttpClient,
             [
                 'series' => 'SF60653',
-                'body' => file_get_contents(ClienteTest::JSON_PATH_SF60653_LATEST),
+                'body' => $streamSF60653LatestStub,
                 'startDate' => 'oportuno',
             ]
         );
@@ -300,7 +309,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF43718',
-                'body' => file_get_contents(ClienteTest::JSON_PATH_SF43718_LATEST),
+                'body' => $streamSF43718LatestStub,
                 'startDate' => 'oportuno',
             ]
         );
@@ -308,7 +317,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF43718',
-                'body' => file_get_contents(ClienteTest::JSON_PATH_SF43718_DATE_RANGE),
+                'body' => $streamSF43718DateRangeStub,
                 'startDate' => '2020-11-26',
                 'endDate' => '2020-11-27',
             ]
@@ -317,7 +326,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF60653',
-                'body' => file_get_contents(ClienteTest::JSON_PATH_SF60653_DATE_RANGE),
+                'body' => $streamSF60653DateRangeStub,
                 'startDate' => '2020-11-26',
                 'endDate' => '2020-11-27',
             ]
@@ -326,7 +335,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF43718',
-                'body' => file_get_contents(ClienteTest::JSON_PATH_SF43718_LATEST),
+                'body' => $streamSF43718LatestStub,
                 'startDate' => '2020-11-27',
             ]
         );
@@ -334,7 +343,7 @@ final class ClienteTest extends TestCase
             $mockHttpClient,
             [
                 'series' => 'SF60653',
-                'body' => file_get_contents(ClienteTest::JSON_PATH_SF60653_LATEST),
+                'body' => $streamSF60653LatestStub,
                 'startDate' => '2020-12-01',
             ]
         );
