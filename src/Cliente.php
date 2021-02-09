@@ -8,6 +8,7 @@ use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
+use Xint0\BanxicoPHP\Factories\HttpClientFactory;
 use Xint0\BanxicoPHP\Factories\RequestFactory;
 
 class Cliente

@@ -10,7 +10,7 @@ use Psr\Http\Message\RequestInterface;
 use Xint0\BanxicoPHP\Cliente;
 use Xint0\BanxicoPHP\ClienteBanxicoException;
 use Psr\Http\Client\ClientInterface;
-use Xint0\BanxicoPHP\HttpClientFactory;
+use Xint0\BanxicoPHP\Factories\HttpClientFactory;
 use Http\Discovery\Strategy\MockClientStrategy;
 use Http\Mock\Client as MockHttpClient;
 use Http\Message\RequestMatcher\RequestMatcher;

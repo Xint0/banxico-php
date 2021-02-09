@@ -5,7 +5,7 @@ namespace Xint0\BanxicoPHP\Tests;
 use Http\Client\HttpClient;
 use Http\Discovery\ClassDiscovery;
 use Http\Discovery\Strategy\MockClientStrategy;
-use Xint0\BanxicoPHP\HttpClientFactory;
+use Xint0\BanxicoPHP\Factories\HttpClientFactory;
 use PHPUnit\Framework\TestCase;
 
 class HttpClientFactoryTest extends TestCase

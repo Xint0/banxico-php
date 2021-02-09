@@ -1,6 +1,6 @@
 <?php
 
-namespace Xint0\BanxicoPHP;
+namespace Xint0\BanxicoPHP\Factories;
 
 use Http\Client\Common\Plugin\AuthenticationPlugin;
 use Psr\Http\Client\ClientInterface;
