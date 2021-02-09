@@ -113,6 +113,9 @@ class ResponseParserTest extends TestCase
 
     /**
      * @dataProvider responseProvider
+     *
+     * @param  array  $test_data
+     * @param  array  $final_state
      */
     public function test_parse_method_returns_expected_result(array $test_data, array $final_state): void
     {
