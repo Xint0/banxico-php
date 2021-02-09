@@ -1,6 +1,6 @@
 <?php
 
-namespace Xint0\BanxicoPHP\Tests;
+namespace Xint0\BanxicoPHP\Tests\Factories;
 
 use Http\Client\HttpClient;
 use Http\Discovery\ClassDiscovery;
