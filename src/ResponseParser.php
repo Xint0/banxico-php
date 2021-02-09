@@ -30,5 +30,21 @@ class ResponseParser
         } catch (JsonException $jsonException) {
             throw new ClienteBanxicoException('Response parsing failed.', 2, $jsonException);
         }
+
+        return $this->transformJson($json);
+    }
+
+    private function transformJson(array $json): array
+    {
+        $result = [];
+        foreach ($json['bmx']['series'] as $series) {
+            $seriesId = $series['idSerie'];
+            $result[$seriesId] = [];
+            foreach ($series['datos'] as $data) {
+                $result[$seriesId][$data['fecha']] = $data['dato'];
+            }
+        }
+
+        return $result;
     }
 }
