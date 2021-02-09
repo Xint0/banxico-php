@@ -14,6 +14,11 @@ use PHPUnit\Framework\TestCase;
 
 class ResponseParserTest extends TestCase
 {
+    private const JSON_PATH_SF43718_DATE_RANGE = __DIR__ . '/data/SF43718_date_range.json';
+    private const JSON_PATH_SF43718_LATEST = __DIR__ . '/data/SF43718_latest.json';
+    private const JSON_PATH_SF60653_DATE_RANGE = __DIR__ . '/data/SF60653_date_range.json';
+    private const JSON_PATH_SF60653_LATEST = __DIR__ . '/data/SF60653_latest.json';
+
     public function test_parse_method_throws_expected_exception_when_status_code_is_not_success(): void
     {
         $stub = $this->createStub(ResponseInterface::class);
@@ -48,5 +53,76 @@ class ResponseParserTest extends TestCase
         $sut = new ResponseParser();
         $this->expectExceptionObject(new ClienteBanxicoException('Response parsing failed.', 2, new JsonException()));
         $sut->parse($stubResponse);
+    }
+
+    public function responseProvider(): array
+    {
+        return [
+            'SF43718 date range' => [
+                'test_data' => [
+                    'file_path' => self::JSON_PATH_SF43718_DATE_RANGE,
+                ],
+                'final_state' => [
+                    'result' => [
+                        'SF43718' => [
+                            '26/11/2020' => '20.0467',
+                            '27/11/2020' => '20.0777',
+                        ],
+                    ],
+                ],
+            ],
+            'SF43718 latest' => [
+                'test_data' => [
+                    'file_path' => self::JSON_PATH_SF43718_LATEST,
+                ],
+                'final_state' => [
+                    'result' => [
+                        'SF43718' => [
+                            '27/11/2020' => '20.0777',
+                        ],
+                    ],
+                ],
+            ],
+            'SF60653 date range' => [
+                'test_data' => [
+                    'file_path' => self::JSON_PATH_SF60653_DATE_RANGE,
+                ],
+                'final_state' => [
+                    'result' => [
+                        'SF60653' => [
+                            '26/11/2020' => '20.0577',
+                            '27/11/2020' => '20.0465',
+                        ],
+                    ],
+                ],
+            ],
+            'SF60653 latest' => [
+                'test_data' => [
+                    'file_path' => self::JSON_PATH_SF60653_LATEST,
+                ],
+                'final_state' => [
+                    'result' => [
+                        'SF60653' => [
+                            '01/12/2020' => '20.0777',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider responseProvider
+     */
+    public function test_parse_method_returns_expected_result(array $test_data, array $final_state): void
+    {
+        $stubStream = $this->createStub(StreamInterface::class);
+        $stubStream->method('getContents')->willReturn(file_get_contents($test_data['file_path']));
+        $stubResponse = $this->createStub(ResponseInterface::class);
+        $stubResponse->method('getStatusCode')->willReturn(200);
+        $stubResponse->method('getBody')->willReturn($stubStream);
+        $sut = new ResponseParser();
+        $result = $sut->parse($stubResponse);
+        $this->assertEquals($final_state['result'], $result);
     }
 }
