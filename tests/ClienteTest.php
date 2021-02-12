@@ -278,6 +278,72 @@ final class ClienteTest extends TestCase
         $this->assertEquals($finalState['result'], $result);
     }
 
+    public function obtenerSerieProvider(): array
+    {
+        return [
+            'oportuno' => [
+                'testData' => [
+                    'params' => [ 'SF43718' ],
+                ],
+                'finalState' => [
+                    'result' => [
+                        'SF43718' => [
+                            '27/11/2020' => '20.0777',
+                        ],
+                    ],
+                ],
+            ],
+            'rango de fechas' => [
+                'testData' => [
+                    'params' => [
+                        'SF43718',
+                        '2020-11-26',
+                        '2020-11-27',
+                    ],
+                ],
+                'finalState' => [
+                    'result' => [
+                        'SF43718' => [
+                            '26/11/2020' => '20.0467',
+                            '27/11/2020' => '20.0777',
+                        ],
+                    ],
+                ],
+            ],
+            'un día' => [
+                'testData' => [
+                    'params' => [
+                        'SF43718',
+                        '2020-11-27',
+                    ],
+                ],
+                'finalState' => [
+                    'result' => [
+                        'SF43718' => [
+                            '27/11/2020' => '20.0777',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider obtenerSerieProvider
+     *
+     * @param  array  $testData
+     * @param  array  $finalState
+     */
+    public function test_obtener_serie_method_returns_expected_result(array $testData, array $finalState): void
+    {
+        $mockHttpClient = $this->mockHttpClient();
+        $httpClient = HttpClientFactory::create('test-token', [], $mockHttpClient);
+        $sut = new Cliente([ 'token' => 'test-token' ], $httpClient);
+        $params = $testData['params'] ?? [];
+        $result = $sut->obtenerSerie(...$params);
+        $this->assertEquals($finalState['result'], $result);
+    }
+
     public function test_throws_expected_exception_on_http_client_exception(): void
     {
         $this->expectException(ClienteBanxicoException::class);
