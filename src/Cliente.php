@@ -14,8 +14,9 @@ class Cliente
     private const SERIES_FIX_USD_EXCHANGE_RATE = 'SF43718';
     private const SERIES_PAYMENTS_USD_EXCHANGE_RATE = 'SF60653';
 
-    private array $config;
     private ClientInterface $client;
+    private RequestFactory $requestFactory;
+    private ResponseParser $responseParser;
 
     /**
      * Crea una instancia de la clase.
@@ -25,8 +26,10 @@ class Cliente
      */
     public function __construct($config = [], ?ClientInterface $cliente = null)
     {
-        $this->config = $this->initialConfiguration($config);
-        $this->client = $cliente ?? HttpClientFactory::create($config['token']);
+        $initialConfig = $this->initialConfiguration($config);
+        $this->client = $cliente ?? HttpClientFactory::create($initialConfig['token']);
+        $this->requestFactory = new RequestFactory($initialConfig['url']);
+        $this->responseParser = new ResponseParser();
     }
 
     /**
@@ -36,36 +39,20 @@ class Cliente
      * @param  string|null  $startDate
      * @param  string|null  $endDate
      *
-     * @return array|false|null
+     * @return array<string, array<string, string>>
      *
      * @throws ClienteBanxicoException
      */
-    public function obtenerSerie(string $series, ?string $startDate = null, ?string $endDate = null)
+    public function obtenerSerie(string $series, ?string $startDate = null, ?string $endDate = null): array
     {
-        $requestFactory = new RequestFactory($this->config['url']);
-        $request = $requestFactory->createRequest($series, $startDate, $endDate);
+        $request = $this->requestFactory->createRequest($series, $startDate, $endDate);
         try {
             $response = $this->client->sendRequest($request);
         } catch (ClientExceptionInterface $clientException) {
             throw new ClienteBanxicoException('HTTP request failed.', 0, $clientException);
         }
 
-        $responseParser = new ResponseParser();
-        try {
-            $result = $responseParser->parse($response);
-        } catch (ClienteBanxicoException $clienteBanxicoException) {
-            if ($clienteBanxicoException->getCode() > 200) {
-                return false;
-            }
-        }
-
-        $key = array_key_first($result);
-        $result_count = count($result[$key]);
-        if ($result_count === 1) {
-            return $result[$key][array_key_first($result[$key])];
-        }
-
-        return $result;
+        return $this->responseParser->parse($response);
     }
 
     /**
@@ -74,13 +61,13 @@ class Cliente
      * @param  string|null  $fechaInicio
      * @param  string|null  $fechaFinal
      *
-     * @return array|false|null
+     * @return array|string|false
      *
      * @throws ClienteBanxicoException
      */
     public function obtenerTipoDeCambioUsdPagos(?string $fechaInicio = null, ?string $fechaFinal = null)
     {
-        return $this->obtenerSerie(self::SERIES_PAYMENTS_USD_EXCHANGE_RATE, $fechaInicio, $fechaFinal);
+        return $this->obtenerYProcesarSerie(self::SERIES_PAYMENTS_USD_EXCHANGE_RATE, $fechaInicio, $fechaFinal);
     }
 
     /**
@@ -89,13 +76,42 @@ class Cliente
      * @param  string|null  $fechaInicio
      * @param  string|null  $fechaFinal
      *
-     * @return array|false|null
+     * @return array|string|false
      *
      * @throws ClienteBanxicoException
      */
     public function obtenerTipoDeCambioUsdFix(?string $fechaInicio = null, ?string $fechaFinal = null)
     {
-        return $this->obtenerSerie(self::SERIES_FIX_USD_EXCHANGE_RATE, $fechaInicio, $fechaFinal);
+        return $this->obtenerYProcesarSerie(self::SERIES_FIX_USD_EXCHANGE_RATE, $fechaInicio, $fechaFinal);
+    }
+
+    /**
+     * @param  string  $serie
+     * @param  string|null  $fechaInicio
+     * @param  string|null  $fechaFinal
+     *
+     * @return array|false|string
+     *
+     * @throws ClienteBanxicoException
+     */
+    private function obtenerYProcesarSerie(string $serie, ?string $fechaInicio = null, ?string $fechaFinal = null)
+    {
+        try {
+            $result = $this->obtenerSerie($serie, $fechaInicio, $fechaFinal);
+        } catch (ClienteBanxicoException $clienteBanxicoException) {
+            if ($clienteBanxicoException->getCode() > 200) {
+                return false;
+            }
+
+            throw $clienteBanxicoException;
+        }
+
+        $firstKeyValue = $result[array_key_first($result)];
+        if (count($result) === 1 && count($firstKeyValue) === 1) {
+            return $firstKeyValue[array_key_first($firstKeyValue)];
+        }
+
+        return $result;
     }
 
     /**
