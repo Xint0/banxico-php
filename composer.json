@@ -35,6 +35,9 @@
         "php-http/message": "^1.0",
         "guzzlehttp/psr7": "^2.0-dev"
     },
+    "replace": {
+        "symfony/polyfill-php73": "*"
+    },
     "autoload": {
         "psr-4": {
             "Xint0\\BanxicoPHP\\": "src/"
