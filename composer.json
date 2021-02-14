@@ -22,18 +22,19 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "ext-json": "*",
-        "psr/http-client": "^1.0",
-        "psr/http-message": "^1.0",
-        "php-http/message-factory": "^1.0",
-        "php-http/discovery": "^1.0",
         "php-http/client-common": "^2.0",
-        "php-http/client-implementation": "^1.0"
+        "php-http/discovery": "^1.0",
+        "php-http/httplug": "^2.2",
+        "psr/http-client-implementation": "^1.0",
+        "psr/http-factory-implementation": "^1.0",
+        "psr/http-message": "^1.0"
     },
     "require-dev": {
+        "guzzlehttp/guzzle": "^7.2",
+        "http-interop/http-factory-guzzle": "^1.0",
         "phpunit/phpunit": "^9.3",
         "php-http/mock-client": "^1.0",
-        "php-http/message": "^1.0",
-        "guzzlehttp/psr7": "^2.0-dev"
+        "php-http/message": "^1.0"
     },
     "replace": {
         "symfony/polyfill-php73": "*"
