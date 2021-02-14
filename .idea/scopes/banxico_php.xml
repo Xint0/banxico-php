@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="banxico-php" pattern="file[banxico-php]:*/&amp;&amp;!file:composer.lock&amp;&amp;!file:.phpunit.result.cache&amp;&amp;!file[banxico-php]:vendor//*&amp;&amp;!file[banxico-php]:.idea//*&amp;&amp;!file[banxico-php]:tests//*" />
+</component>
