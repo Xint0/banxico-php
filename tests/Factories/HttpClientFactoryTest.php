@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Xint0\BanxicoPHP\Tests\Factories;
 
 use Http\Client\HttpClient;
