@@ -1,179 +1,137 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Xint0\BanxicoPHP;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Middleware;
-use GuzzleHttp\Psr7\Request;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Xint0\BanxicoPHP\Factories\HttpClientFactory;
+use Xint0\BanxicoPHP\Factories\RequestFactory;
 
 /**
- * @method string obtenerTipoDeCambioUSDPagos(string $fechaInicio = null, string $fechaFinal = null)
- * @method string obtenerTipoDeCambioUSDFix(string $fechaInicio = null, string $fechaFinal = null)
+ * Class Cliente
+ *
+ * @package Xint0\BanxicoPHP
  */
 class Cliente
 {
-    /** @var array Series */
-    const MAPA_SERIES = [
-        'TipoDeCambioUSDPagos' => 'SF60653',
-        'TipoDeCambioUSDFix' => 'SF43718'
-    ];
+    private const SERIES_FIX_USD_EXCHANGE_RATE = 'SF43718';
+    private const SERIES_PAYMENTS_USD_EXCHANGE_RATE = 'SF60653';
 
-    /** @var array Opciones */
-    private $config;
-
-    /** @var \GuzzleHttp\Client El cliente HTTP */
-    private $client;
+    private ClientInterface $client;
+    private RequestFactory $requestFactory;
+    private ResponseParser $responseParser;
 
     /**
      * Crea una instancia de la clase.
      *
-     * @param array $config Opciones de configuración.
+     * @param  array  $config  Opciones de configuración.
+     * @param  ClientInterface|null  $cliente  El cliente HTTP.
      */
-    public function __construct(array $config = [])
+    public function __construct($config = [], ?ClientInterface $cliente = null)
     {
-        if (!isset($config['token'])) {
-            throw new \InvalidArgumentException('Se debe indicar el token');
-        }
-
-        $this->configurarOpciones($config);
-        $this->client = new Client([
-            'base_uri' => $this->config['url'],
-            'headers' => [
-                'User-Agent' => 'Xint0\BanxicoPHP 0.1.0',
-                'Accept' => 'application/json',
-                'Bmx-Token' => $this->config['token'],
-            ],
-            'timeout' => 2.0,
-        ]);
-    }
-
-    public function __call($method, $args)
-    {
-        if (substr($method, 0, 7) === 'obtener') {
-            $series = self::getSeries(substr($method, 7));
-        } else {
-            throw new \RuntimeException("El método '{$method}' no existe.");
-        }
-
-        $parameterCount = count($args);
-        $startDate = null;
-        $endDate = null;
-        if ($parameterCount < 1) {
-            $startDate = 'oportuno';
-            $endDate = 'oportuno';
-        } elseif ($parameterCount == 1) {
-            $startDate = self::normalizeDate($args[0]);
-            $endDate = 'oportuno';
-        } else {
-            $startDate = self::normalizeDate($args[0]);
-            $endDate = self::normalizeDate($args[1]);
-        }
-
-        return self::processResponse($this->sendRequest($series, $startDate, $endDate));
+        $initialConfig = $this->initialConfiguration($config);
+        $this->client = $cliente ?? HttpClientFactory::create($initialConfig['token']);
+        $this->requestFactory = new RequestFactory($initialConfig['url']);
+        $this->responseParser = new ResponseParser();
     }
 
     /**
-     * Configura las opciones del cliente.
+     * Devuelve la serie de datos indicada.
      *
-     * @param array $config
+     * @param  string  $series
+     * @param  string|null  $startDate
+     * @param  string|null  $endDate
+     *
+     * @return array<string, array<string, string>>
+     *
+     * @throws ClienteBanxicoException
      */
-    private function configurarOpciones(array $config)
+    public function obtenerSerie(string $series, ?string $startDate = null, ?string $endDate = null): array
     {
-        $defaults = [
-            'url' => 'https://www.banxico.org.mx/SieAPIRest/service/v1/'
-        ];
+        $request = $this->requestFactory->createRequest($series, $startDate, $endDate);
+        try {
+            $response = $this->client->sendRequest($request);
+        } catch (ClientExceptionInterface $clientException) {
+            throw new ClienteBanxicoException('HTTP request failed.', 0, $clientException);
+        }
 
-        $this->config = $config + $defaults;
+        return $this->responseParser->parse($response);
     }
 
     /**
-     * Sends the HTTP request to the SIE API end-point.
+     * Devuelve el tipo de cambio para pagos denominados en dólares estadounidenses.
      *
-     * @param string $series
-     * @param string $startDate
-     * @param string $endDate
-     * @return string
+     * @param  string|null  $fechaInicio
+     * @param  string|null  $fechaFinal
+     *
+     * @return array|string|false
+     *
+     * @throws ClienteBanxicoException
      */
-    private function sendRequest(string $series, string $startDate, string $endDate)
+    public function obtenerTipoDeCambioUsdPagos(?string $fechaInicio = null, ?string $fechaFinal = null)
     {
-        $uri = "series/{$series}/datos/{$startDate}" . ($startDate != 'oportuno' ? ($endDate == 'oportuno' ? "/$startDate" : "/$endDate") : '');
-        $request = new Request('GET', $uri);
-        return $this->client->send($request, [
-            'debug' => false
-        ]);
+        return $this->obtenerYProcesarSerie(self::SERIES_PAYMENTS_USD_EXCHANGE_RATE, $fechaInicio, $fechaFinal);
     }
 
-    private static function processResponse(\Psr\Http\Message\ResponseInterface $response)
+    /**
+     * Devuelve el tipo de cambio fix pesos por dólar estadounidense.
+     *
+     * @param  string|null  $fechaInicio
+     * @param  string|null  $fechaFinal
+     *
+     * @return array|string|false
+     *
+     * @throws ClienteBanxicoException
+     */
+    public function obtenerTipoDeCambioUsdFix(?string $fechaInicio = null, ?string $fechaFinal = null)
     {
-        $statusCode = $response->getStatusCode();
-        $reasonPhrase = $response->getReasonPhrase();
-        $protocolVersion = $response->getProtocolVersion();
-
-        if ($statusCode == 200) {
-            $body = $response->getBody();
-            return self::parseResponseBody($body);
-        } else {
-            return false;
-        }
+        return $this->obtenerYProcesarSerie(self::SERIES_FIX_USD_EXCHANGE_RATE, $fechaInicio, $fechaFinal);
     }
 
-    private static function parseResponseBody(string $body)
+    /**
+     * @param  string  $serie
+     * @param  string|null  $fechaInicio
+     * @param  string|null  $fechaFinal
+     *
+     * @return array|false|string
+     *
+     * @throws ClienteBanxicoException
+     */
+    private function obtenerYProcesarSerie(string $serie, ?string $fechaInicio = null, ?string $fechaFinal = null)
     {
-        try
-        {
-            $data = json_decode($body);
-            $series = [];
-            $itemCount = 0;
-            foreach($data->bmx->series as $serie) {
-                $series[$serie->idSerie] = [];
-                foreach($serie->datos as $dato) {
-                    $series[$serie->idSerie][$dato->fecha] = $dato->dato;
-                    $lastItem = $dato->dato;
-                    $itemCount++;
-                }
+        try {
+            $result = $this->obtenerSerie($serie, $fechaInicio, $fechaFinal);
+        } catch (ClienteBanxicoException $clienteBanxicoException) {
+            if ($clienteBanxicoException->getCode() > 200) {
+                return false;
             }
 
-            if ($itemCount == 1) {
-                return $lastItem;
-            }
-
-            return $series;
+            throw $clienteBanxicoException;
         }
-        catch(Exception $e)
-        {
-            return false;
-        }
-    }
 
-    /**
-     * Interpreta una cadena de caracteres como una fecha y devuelve la fecha
-     * en formato AAAA-MM-DD
-     *
-     * @param string $cadena
-     * @return string
-     */
-    private static function normalizeDate(string $cadena)
-    {
-        $result = 'oportuno';
-        $fecha = date_create($cadena);
-        if ($fecha !== false) {
-            $result = date_format($fecha, 'Y-m-d');
+        $firstKeyValue = $result[array_key_first($result)];
+        if (count($result) === 1 && count($firstKeyValue) === 1) {
+            return $firstKeyValue[array_key_first($firstKeyValue)];
         }
 
         return $result;
     }
 
     /**
-     * Obtiene el identificador de la serie a partir del nombre.
+     * Configura las opciones del cliente.
      *
-     * @param string $nombre
-     * @return string
+     * @param  array  $config
+     *
+     * @return array
      */
-    private static function getSeries(string $nombre)
+    private function initialConfiguration(array $config): array
     {
-        if (!array_key_exists($nombre, self::MAPA_SERIES)) {
-            throw new \InvalidArgumentException("La serie '{$nombre}' no está definida");
-        }
+        $defaults = [
+            'url' => 'https://www.banxico.org.mx/SieAPIRest/service/v1'
+        ];
 
-        return self::MAPA_SERIES[$nombre];
+        return $config + $defaults;
     }
 }
