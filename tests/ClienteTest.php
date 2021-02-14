@@ -42,7 +42,7 @@ final class ClienteTest extends TestCase
     {
         $cliente = new Cliente([ 'token' => 'test-token' ]);
 
-        $this->assertInstanceOf(Cliente::class, $cliente);
+        self::assertInstanceOf(Cliente::class, $cliente);
     }
 
     public function expectedRequestProvider(): array
@@ -159,11 +159,11 @@ final class ClienteTest extends TestCase
         $sut->{$method}(...$params);
 
         $requests = $mockHttpClient->getRequests();
-        $this->assertCount(1, $requests);
+        static::assertCount(1, $requests);
         $request = $requests[0];
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals($expectedUri, (string)$request->getUri());
-        $this->assertEquals($expectedHeaders, $request->getHeaders());
+        static::assertEquals('GET', $request->getMethod());
+        static::assertEquals($expectedUri, (string)$request->getUri());
+        static::assertEquals($expectedHeaders, $request->getHeaders());
     }
 
     public function obtenerTipoDeCambioUsdPagosProvider(): array
@@ -219,7 +219,7 @@ final class ClienteTest extends TestCase
         $sut = new Cliente([ 'token' => 'test-token' ], $httpClient);
         $params = $testData['params'] ?? [];
         $result = $sut->obtenerTipoDeCambioUsdPagos(...$params);
-        $this->assertEquals($finalState['result'], $result);
+        static::assertEquals($finalState['result'], $result);
     }
 
     public function obtenerTipoDeCambioUsdFixProvider(): array
@@ -275,7 +275,7 @@ final class ClienteTest extends TestCase
         $sut = new Cliente([ 'token' => 'test-token' ], $httpClient);
         $params = $testData['params'] ?? [];
         $result = $sut->obtenerTipoDeCambioUsdFix(...$params);
-        $this->assertEquals($finalState['result'], $result);
+        static::assertEquals($finalState['result'], $result);
     }
 
     public function obtenerSerieProvider(): array
@@ -341,7 +341,7 @@ final class ClienteTest extends TestCase
         $sut = new Cliente([ 'token' => 'test-token' ], $httpClient);
         $params = $testData['params'] ?? [];
         $result = $sut->obtenerSerie(...$params);
-        $this->assertEquals($finalState['result'], $result);
+        static::assertEquals($finalState['result'], $result);
     }
 
     public function test_throws_expected_exception_on_http_client_exception(): void

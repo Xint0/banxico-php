@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP\Factories;
 
@@ -9,6 +10,11 @@ use Http\Client\Common\Plugin\HeaderSetPlugin;
 use Http\Discovery\HttpClientDiscovery;
 use Http\Client\Common\PluginClient;
 
+/**
+ * Class HttpClientFactory
+ *
+ * @package Xint0\BanxicoPHP\Factories
+ */
 class HttpClientFactory
 {
     /**

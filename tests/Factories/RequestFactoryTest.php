@@ -64,10 +64,10 @@ class RequestFactoryTest extends TestCase
     {
         $sut = new RequestFactory(...$initial_state);
         $result = $sut->createRequest(...$params);
-        $this->assertEquals('GET', $result->getMethod());
+        static::assertEquals('GET', $result->getMethod());
         $resultUri = $result->getUri();
-        $this->assertEquals($final_state['expected_scheme'], $resultUri->getScheme());
-        $this->assertEquals($final_state['expected_host'], $resultUri->getHost());
-        $this->assertEquals($final_state['expected_path'], $resultUri->getPath());
+        static::assertEquals($final_state['expected_scheme'], $resultUri->getScheme());
+        static::assertEquals($final_state['expected_host'], $resultUri->getHost());
+        static::assertEquals($final_state['expected_path'], $resultUri->getPath());
     }
 }

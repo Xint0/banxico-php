@@ -9,6 +9,11 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriFactoryInterface;
 
+/**
+ * Class RequestFactory
+ *
+ * @package Xint0\BanxicoPHP\Factories
+ */
 class RequestFactory
 {
     private string $baseUri;
@@ -47,8 +52,8 @@ class RequestFactory
                 );
         }
 
-        $uri = $this->psrUriFactory->createUri("{$this->baseUri}/series/${series}/datos/${suffix}");
-        return $this->psrRequestFactory->createRequest('GET', $uri);
+        $requestUri = $this->psrUriFactory->createUri("{$this->baseUri}/series/${series}/datos/${suffix}");
+        return $this->psrRequestFactory->createRequest('GET', $requestUri);
     }
 
     /**
@@ -64,7 +69,7 @@ class RequestFactory
             return null;
         }
 
-        $date = date_create($input);
-        return $date !== false ? date_format($date, 'Y-m-d') : null;
+        $dateValue = date_create($input);
+        return $dateValue !== false ? date_format($dateValue, 'Y-m-d') : null;
     }
 }

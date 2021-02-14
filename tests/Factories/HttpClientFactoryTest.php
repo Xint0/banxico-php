@@ -15,7 +15,7 @@ class HttpClientFactoryTest extends TestCase
         ClassDiscovery::appendStrategy(MockClientStrategy::class);
         $token = 'test-token';
         $httpClient = HttpClientFactory::create($token);
-        $this->assertNotNull($httpClient);
-        $this->assertInstanceOf(HttpClient::class, $httpClient);
+        static::assertNotNull($httpClient);
+        static::assertInstanceOf(HttpClient::class, $httpClient);
     }
 }

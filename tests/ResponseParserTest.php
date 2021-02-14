@@ -126,6 +126,6 @@ class ResponseParserTest extends TestCase
         $stubResponse->method('getBody')->willReturn($stubStream);
         $sut = new ResponseParser();
         $result = $sut->parse($stubResponse);
-        $this->assertEquals($final_state['result'], $result);
+        static::assertEquals($final_state['result'], $result);
     }
 }

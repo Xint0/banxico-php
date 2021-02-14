@@ -8,6 +8,11 @@ use JsonException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
+/**
+ * Class ResponseParser
+ *
+ * @package Xint0\BanxicoPHP
+ */
 class ResponseParser
 {
     private const HTTP_STATUS_SUCCESS = 200;
@@ -26,12 +31,12 @@ class ResponseParser
         }
 
         try {
-            $json = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+            $jsonValue = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $jsonException) {
             throw new ClienteBanxicoException('Response parsing failed.', 2, $jsonException);
         }
 
-        return $this->transformJson($json);
+        return $this->transformJson($jsonValue);
     }
 
     private function transformJson(array $json): array
@@ -40,8 +45,8 @@ class ResponseParser
         foreach ($json['bmx']['series'] as $series) {
             $seriesId = $series['idSerie'];
             $result[$seriesId] = [];
-            foreach ($series['datos'] as $data) {
-                $result[$seriesId][$data['fecha']] = $data['dato'];
+            foreach ($series['datos'] as $record) {
+                $result[$seriesId][$record['fecha']] = $record['dato'];
             }
         }
 

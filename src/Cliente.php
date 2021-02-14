@@ -9,6 +9,11 @@ use Psr\Http\Client\ClientInterface;
 use Xint0\BanxicoPHP\Factories\HttpClientFactory;
 use Xint0\BanxicoPHP\Factories\RequestFactory;
 
+/**
+ * Class Cliente
+ *
+ * @package Xint0\BanxicoPHP
+ */
 class Cliente
 {
     private const SERIES_FIX_USD_EXCHANGE_RATE = 'SF43718';
