@@ -45,5 +45,13 @@
         "psr-4": {
             "Xint0\\BanxicoPHP\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "test": [
+            "phpunit"
+        ]
+    },
+    "scripts-descriptions": {
+        "test": "Run all tests."
     }
 }
