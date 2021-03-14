@@ -34,7 +34,12 @@ final class ClienteTest extends TestCase
     public function test_throws_exception_without_token(): void
     {
         $this->expectError();
-        $this->expectErrorMessage('Undefined index: token');
+        if (version_compare(PHP_VERSION, '8.0.0') >= 0) {
+            $this->expectErrorMessage('Undefined array key "token"');
+        } else {
+            $this->expectErrorMessage('Undefined index: token');
+        }
+
         new Cliente();
     }
 
