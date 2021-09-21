@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Xint0/banxico-php/compare/v0.3.1...master)
+## [Unreleased](https://github.com/Xint0/banxico-php/compare/1.0.0...master)
+
+## [1.0.0](https://github.com/Xint0/banxico-php/compare/v0.3.1...1.0.0)
+
+### Changed
+
+- Replace `Cliente` with `SieClient` class. **Breaking**
+- `fetchSeries`, `exchangeRateUsdDetermination`, and `exchangeRateUsdLiquidation` return single result as single string,
+single series with multiple values as array keyed by date in `YYYY-MM-DD`, multiple series keyed by series code.
 
 ## [v0.3.1](https://github.com/Xint0/banxico-php/compare/v0.3.0...v0.3.1)
 
