@@ -1,0 +1,79 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Xint0\BanxicoPHP;
+
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Xint0\BanxicoPHP\Factories\HttpClientFactory;
+use Xint0\BanxicoPHP\Factories\RequestFactory;
+
+/**
+ * Banxico SIE REST API client
+ */
+class SieClient
+{
+    public const SERIES_USD_EXCHANGE_RATE_DETERMINATION = 'SF43718';
+    public const SERIES_USD_EXCHANGE_RATE_LIQUIDATION = 'SF60653';
+    private const DEFAULT_PARAMS = ['base_uri' => 'https://www.banxico.org.mx/SieAPIRest/service/v1'];
+
+    private ClientInterface $httpClient;
+    private RequestFactory $requestFactory;
+    private ResponseParser $responseParser;
+    private array $params;
+
+    public function __construct(string $token, ?ClientInterface $httpClient = null, array $params = [])
+    {
+        $this->params = self::DEFAULT_PARAMS + $params;
+        $this->httpClient = HttpClientFactory::create($token, [], $httpClient);
+        $this->requestFactory = new RequestFactory($this->baseUri());
+        $this->responseParser = new ResponseParser();
+    }
+
+    /**
+     * @param  string  $series
+     * @param  string|null  $start_date
+     * @param  string|null  $end_date
+     *
+     * @return array|mixed
+     */
+    public function fetchSeries(string $series, ?string $start_date = null, ?string $end_date = null)
+    {
+        $request = $this->requestFactory->createRequest($series, $start_date, $end_date);
+        try {
+            $response = $this->httpClient->sendRequest($request);
+        } catch (ClientExceptionInterface $clientException) {
+            throw new SieClientException('HTTP request failed', 0, $clientException);
+        }
+
+        return $this->responseParser->parse($response);
+    }
+
+    /**
+     * @param  string|null  $start_date
+     * @param  string|null  $end_date
+     *
+     * @return array|mixed
+     */
+    public function exchangeRateUsdDetermination(?string $start_date = null, ?string $end_date = null)
+    {
+        return $this->fetchSeries(self::SERIES_USD_EXCHANGE_RATE_DETERMINATION, $start_date, $end_date);
+    }
+
+    /**
+     * @param  string|null  $start_date
+     * @param  string|null  $end_date
+     *
+     * @return array|mixed
+     */
+    public function exchangeRateUsdLiquidation(?string $start_date = null, ?string $end_date = null)
+    {
+        return $this->fetchSeries(self::SERIES_USD_EXCHANGE_RATE_LIQUIDATION, $start_date, $end_date);
+    }
+
+    private function baseUri(): string
+    {
+        return $this->params['base_uri'];
+    }
+}
