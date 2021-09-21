@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Xint0\BanxicoPHP\Factories;
 
 use Http\Client\Common\Plugin\AuthenticationPlugin;
+use Http\Client\Common\Plugin\DecoderPlugin;
 use Psr\Http\Client\ClientInterface;
 use Http\Message\Authentication\Header;
 use Http\Client\Common\Plugin\HeaderSetPlugin;
@@ -33,10 +34,11 @@ class HttpClientFactory
             $httpClient = HttpClientDiscovery::find();
         }
         $plugins[] = new HeaderSetPlugin([
-            'User-Agent' => 'Xint0 BanxicoPHP/0.2.0',
+            'User-Agent' => 'Xint0 BanxicoPHP/1.0.0',
             'Accept' => 'application/json',
         ]);
         $plugins[] = new AuthenticationPlugin(new Header('Bmx-Token', $token));
+        $plugins[] = new DecoderPlugin();
         return new PluginClient($httpClient, $plugins);
     }
 }
