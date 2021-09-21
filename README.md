@@ -78,8 +78,8 @@ los derechos reservados.
 
 Este paquete es software libre, se puede distribuir y/o modificarse bajo los términos de la [Licencia MIT].
 
-[PSR-18]:(https://www.php-fig.org/psr/psr-18/)
-[php-http.org]:(https://php-http.org)
-[lista de clientes y adaptadores]:(https://docs.php-http.org/en/latest/clients.html)
-[página de la API REST]:(https://www.banxico.org.mx/SieAPIRest/service/v1/token)
-[Licencia MIT]:(https://github.com/Xint0/banxico-php/blob/master/LICENSE)
+[PSR-18]:https://www.php-fig.org/psr/psr-18/
+[php-http.org]:https://php-http.org
+[lista de clientes y adaptadores]:https://docs.php-http.org/en/latest/clients.html
+[página de la API REST]:https://www.banxico.org.mx/SieAPIRest/service/v1/token
+[Licencia MIT]:/LICENSE
