@@ -11,6 +11,7 @@ use Xint0\BanxicoPHP\ResponseParser;
 use RuntimeException;
 use Psr\Http\Message\StreamInterface;
 use PHPUnit\Framework\TestCase;
+use Xint0\BanxicoPHP\SieClientException;
 
 class ResponseParserTest extends TestCase
 {
@@ -24,7 +25,7 @@ class ResponseParserTest extends TestCase
         $stub = $this->createStub(ResponseInterface::class);
         $stub->method('getStatusCode')->willReturn(500);
         $sut = new ResponseParser();
-        $this->expectException(ClienteBanxicoException::class);
+        $this->expectException(SieClientException::class);
         $this->expectExceptionCode(500);
         $this->expectExceptionMessage('Request failed.');
         $sut->parse($stub);
@@ -39,7 +40,7 @@ class ResponseParserTest extends TestCase
         $stubResponse->method('getStatusCode')->willReturn(200);
         $stubResponse->method('getBody')->willReturn($stubStream);
         $sut = new ResponseParser();
-        $this->expectExceptionObject(new ClienteBanxicoException('Could not get response content.', 1, $runtimeException));
+        $this->expectExceptionObject(new SieClientException('Could not get response content.', 1, $runtimeException));
         $sut->parse($stubResponse);
     }
 
@@ -51,7 +52,7 @@ class ResponseParserTest extends TestCase
         $stubResponse->method('getStatusCode')->willReturn(200);
         $stubResponse->method('getBody')->willReturn($stubStream);
         $sut = new ResponseParser();
-        $this->expectExceptionObject(new ClienteBanxicoException('Response parsing failed.', 2, new JsonException()));
+        $this->expectExceptionObject(new SieClientException('Response parsing failed.', 2, new JsonException()));
         $sut->parse($stubResponse);
     }
 
@@ -64,10 +65,8 @@ class ResponseParserTest extends TestCase
                 ],
                 'final_state' => [
                     'result' => [
-                        'SF43718' => [
-                            '26/11/2020' => '20.0467',
-                            '27/11/2020' => '20.0777',
-                        ],
+                        '2020-11-26' => '20.0467',
+                        '2020-11-27' => '20.0777',
                     ],
                 ],
             ],
@@ -76,11 +75,7 @@ class ResponseParserTest extends TestCase
                     'file_path' => self::JSON_PATH_SF43718_LATEST,
                 ],
                 'final_state' => [
-                    'result' => [
-                        'SF43718' => [
-                            '27/11/2020' => '20.0777',
-                        ],
-                    ],
+                    'result' => '20.0777',
                 ],
             ],
             'SF60653 date range' => [
@@ -89,10 +84,8 @@ class ResponseParserTest extends TestCase
                 ],
                 'final_state' => [
                     'result' => [
-                        'SF60653' => [
-                            '26/11/2020' => '20.0577',
-                            '27/11/2020' => '20.0465',
-                        ],
+                        '2020-11-26' => '20.0577',
+                        '2020-11-27' => '20.0465',
                     ],
                 ],
             ],
@@ -101,11 +94,7 @@ class ResponseParserTest extends TestCase
                     'file_path' => self::JSON_PATH_SF60653_LATEST,
                 ],
                 'final_state' => [
-                    'result' => [
-                        'SF60653' => [
-                            '01/12/2020' => '20.0777',
-                        ],
-                    ],
+                    'result' => '20.0777',
                 ],
             ],
         ];
