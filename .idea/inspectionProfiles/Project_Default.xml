@@ -124,7 +124,7 @@
     </inspection_tool>
     <inspection_tool class="PhpConstantNamingConventionInspection" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="banxico-php" level="WARNING" enabled="true">
-        <option name="m_maxLength" value="36" />
+        <option name="m_maxLength" value="38" />
       </scope>
     </inspection_tool>
     <inspection_tool class="PhpConstantReassignmentInspection" enabled="true" level="WARNING" enabled_by_default="false">
