@@ -17,9 +17,6 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
-
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3.2.4
@@ -28,6 +25,9 @@ jobs:
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-suggest
       
     - name: Install PHIVE tools
       uses: ngmy/phive-install-action@0.13.0
