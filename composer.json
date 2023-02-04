@@ -46,7 +46,7 @@
     },
     "scripts": {
         "test": [
-            "phpunit"
+            "tools/phpunit"
         ]
     },
     "scripts-descriptions": {
