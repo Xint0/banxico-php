@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/Xint0/banxico-php/compare/1.0.0...master)
 
+## [1.0.1](https://github.com/Xint0/banxico-php/compare/1.0.0...1.0.1) 2023-02-04
+
+### Changed
+
+- Use phive to install PHPUnit, PHP Code Sniffer, and PHP Code Beautifier and Fixer.
+- Fix GitHub actions workflow to use composer.json hash since we don't commit composer.lock.
+- Use tools/phpunit in composer test script.
+- Add docker images for PHP 7.4, and PHPStan.
+- Use PHPUnit 9.6 schema for phpunit.xml configuration file.
+- Ignore development only files and directories in git export.
+
 ## [1.0.0](https://github.com/Xint0/banxico-php/compare/v0.3.1...1.0.0)
 
 ### Changed
