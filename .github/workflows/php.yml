@@ -28,6 +28,9 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
+      
+    - name: Install PHIVE tools
+      uses: ngmy/phive-install-action@0.13.0
 
     - name: Run test suite
       run: composer run-script test
