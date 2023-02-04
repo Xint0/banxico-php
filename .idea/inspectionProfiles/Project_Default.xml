@@ -37,7 +37,7 @@
     <inspection_tool class="LanguageDetectionInspection" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="banxico-php" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="MessDetectorValidationInspection" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+    <inspection_tool class="MessDetectorValidationInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <scope name="banxico-php" level="WEAK WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="PhpAbstractStaticMethodInspection" enabled="true" level="WARNING" enabled_by_default="false">
@@ -85,13 +85,11 @@
     <inspection_tool class="PhpAttributeIsNotRepeatableInspection" enabled="true" level="WEAK WARNING" enabled_by_default="false">
       <scope name="banxico-php" level="WEAK WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="PhpCSFixerValidationInspection" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+    <inspection_tool class="PhpCSFixerValidationInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <scope name="banxico-php" level="WEAK WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="PhpCSValidationInspection" enabled="true" level="WEAK WARNING" enabled_by_default="false">
-      <scope name="banxico-php" level="WEAK WARNING" enabled="true">
-        <option name="EXTENSIONS" value="php,js,css,inc" />
-      </scope>
+    <inspection_tool class="PhpCSValidationInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="banxico-php" level="WEAK WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="PhpClassCantBeUsedAsAttributeInspection" enabled="true" level="WEAK WARNING" enabled_by_default="false">
       <scope name="banxico-php" level="WEAK WARNING" enabled="true" />
@@ -478,7 +476,7 @@
     <inspection_tool class="PhpSingleStatementWithBracesInspection" enabled="true" level="INFORMATION" enabled_by_default="false">
       <scope name="banxico-php" level="INFORMATION" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="PhpStanGlobal" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+    <inspection_tool class="PhpStanGlobal" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <scope name="banxico-php" level="WEAK WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="PhpStatementHasEmptyBodyInspection" enabled="true" level="WARNING" enabled_by_default="false">
