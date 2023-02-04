@@ -45,3 +45,6 @@ tags
 [._]*.un~
 
 ## End of https://www.toptal.com/developers/gitignore/api/vim,composer,phpunit
+
+# Ignore tools (PHARS, etc)
+/tools/
