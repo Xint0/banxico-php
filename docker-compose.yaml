@@ -1,0 +1,17 @@
+services:
+  php:
+    image: xint0/banxico-php/php
+    build:
+      dockerfile: docker/php/Dockerfile
+    volumes:
+      - .:/usr/src/app
+      - phive:/.phive
+  phpstan:
+    image: xint0/banxico-php/phpstan
+    build:
+      dockerfile: docker/phpstan/Dockerfile
+    volumes:
+      - .:/app
+
+volumes:
+  phive:
