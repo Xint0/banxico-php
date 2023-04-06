@@ -10,6 +10,9 @@
     <option name="highlightLevel" value="WARNING" />
     <option name="transferred" value="true" />
   </component>
+  <component name="PhpExternalFormatter">
+    <option name="externalFormatter" value="PHP_CBF" />
+  </component>
   <component name="PhpIncludePathManager">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/phpspec/prophecy" />
@@ -40,8 +43,8 @@
   </component>
   <component name="PhpInterpreters">
     <interpreters>
-      <interpreter id="e48d4ea8-85db-499d-9576-bc53f99192a8" name="Docker Compose PHP 7.4" home="docker-compose://DATA" debugger_id="php.debugger.XDebug">
-        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker Desktop (Linux)" DOCKER_COMPOSE_SERVICE_NAME="php" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
+      <interpreter id="e48d4ea8-85db-499d-9576-bc53f99192a8" name="Docker Compose PHP 7.4" home="docker-compose://DATA" false="false" debugger_id="php.debugger.XDebug">
+        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker Desktop (Linux)" DOCKER_COMPOSE_SERVICE_NAME="php" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
           <type_data command="RUN" />
           <dockerComposeConfigurationPaths>
             <item value="$PROJECT_DIR$/docker-compose.yaml" />
@@ -49,8 +52,8 @@
           <envs />
         </remote_data>
       </interpreter>
-      <interpreter id="445ffe79-f3ea-4ff9-b10f-a5e1510bbbf4" name="Docker Compose phpstan" home="docker-compose://DATA" debugger_id="php.debugger.XDebug">
-        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker Desktop (Linux)" DOCKER_COMPOSE_SERVICE_NAME="phpstan" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
+      <interpreter id="445ffe79-f3ea-4ff9-b10f-a5e1510bbbf4" name="Docker Compose phpstan" home="docker-compose://DATA" false="false" debugger_id="php.debugger.XDebug">
+        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker Desktop (Linux)" DOCKER_COMPOSE_SERVICE_NAME="phpstan" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
           <type_data command="RUN" />
           <dockerComposeConfigurationPaths>
             <item value="$PROJECT_DIR$/docker-compose.yaml" />
@@ -167,6 +170,9 @@
     </PhpStan_settings>
   </component>
   <component name="PhpStanOptionsConfiguration">
+    <option name="autoload" value="$PROJECT_DIR$/vendor/autoload.php" />
+    <option name="config" value="$PROJECT_DIR$/phpstan.neon" />
+    <option name="level" value="6" />
     <option name="transferred" value="true" />
   </component>
   <component name="PhpUnit">
