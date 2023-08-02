@@ -3,6 +3,8 @@ services:
     image: xint0/banxico-php/php
     build:
       dockerfile: docker/php/Dockerfile
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.2}
     volumes:
       - .:/usr/src/app
       - phive:/.phive
