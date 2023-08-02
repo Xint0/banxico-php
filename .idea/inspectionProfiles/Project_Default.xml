@@ -88,7 +88,7 @@
     <inspection_tool class="PhpCSFixerValidationInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false">
       <scope name="banxico-php" level="WEAK WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="PhpCSValidationInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false">
+    <inspection_tool class="PhpCSValidationInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <scope name="banxico-php" level="WEAK WARNING" enabled="true" />
     </inspection_tool>
     <inspection_tool class="PhpClassCantBeUsedAsAttributeInspection" enabled="true" level="WEAK WARNING" enabled_by_default="false">
