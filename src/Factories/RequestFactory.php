@@ -56,11 +56,11 @@ class RequestFactory
         $suffix = 'oportuno';
         if ($normalizedStartDate !== null) {
             $suffix = $normalizedStartDate . (
-                    $normalizedEndDate === null ? "/${normalizedStartDate}" : "/${normalizedEndDate}"
+                    $normalizedEndDate === null ? "/$normalizedStartDate" : "/$normalizedEndDate"
                 );
         }
 
-        $requestUri = $this->psrUriFactory->createUri("{$this->baseUri}/series/${series}/datos/${suffix}");
+        $requestUri = $this->psrUriFactory->createUri("$this->baseUri/series/$series/datos/$suffix");
         return $this->psrRequestFactory->createRequest('GET', $requestUri);
     }
 
