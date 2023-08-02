@@ -4,5 +4,8 @@ parameters:
     paths:
         - src
         - tests
+    bootstrapFiles:
+        - tools/phpunit
 includes:
     - /composer/vendor/phpstan/phpstan-phpunit/extension.neon
+    - /composer/vendor/phpstan/phpstan-phpunit/rules.neon
