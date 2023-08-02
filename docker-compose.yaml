@@ -12,6 +12,8 @@ services:
     image: xint0/banxico-php/phpstan
     build:
       dockerfile: docker/phpstan/Dockerfile
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.2}
     volumes:
       - .:/app
 
