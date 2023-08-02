@@ -4,7 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Xint0/banxico-php/compare/1.0.2...master)
+## [Unreleased](https://github.com/Xint0/banxico-php/compare/1.0.3...master)
+
+## [1.0.3](https://github.com/Xint0/banxico-php/compare/1.0.3...1.0.3) 2023-08-02
+
+### Changed
+
+- Fix deprecated string interpolation syntax.
+- Upgrade PHPUnit to 9.6.10.
+- Set default PHP version to 8.2 in docker images.
+- Include PHPUnit phar in phpstan configuration.
 
 ## [1.0.2](https://github.com/Xint0/banxico-php/compare/1.0.1...1.0.2) 2023-04-05
 
