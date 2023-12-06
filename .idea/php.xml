@@ -14,7 +14,7 @@
   <component name="PhpCodeSniffer">
     <phpcs_settings>
       <PhpCSConfiguration beautifier_path="$PROJECT_DIR$/tools/phpcbf" tool_path="$PROJECT_DIR$/tools/phpcs" />
-      <phpcs_by_interpreter interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" beautifier_path="tools/phpcbf" standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" tool_path="tools/phpcs" timeout="30000" />
+      <phpcs_by_interpreter interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" beautifier_path="tools/phpcbf" standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" tool_path="tools/phpcs" timeout="60000" />
     </phpcs_settings>
   </component>
   <component name="PhpExternalFormatter">
