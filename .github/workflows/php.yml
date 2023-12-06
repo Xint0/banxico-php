@@ -1,34 +1,39 @@
-name: PHP Composer
+name: Test
 
 on:
   push:
-    branches: [ master ]
+    branches: [ 'master', '1.x', '2.x' ]
   pull_request:
-    branches: [ master ]
-
+    branches: [ 'master', '1.x', '2.x' ]
+  schedule:
+    - cron: '0 16 * * 0'
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        php-version: ['8.1','8.2','8.3']
     steps:
-    - uses: actions/checkout@v3.3.0
-
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3.2.4
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
       with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.json') }}
-
+        php-version: ${{ matrix.php-version }}
+        coverage: none
+        tools: composer
+    - name: Get compose cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+        restore-keys: ${{ runner.os }}-composer-
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
-      
+      run: composer install --no-interaction --prefer-dist --no-progress --no-suggest
     - name: Install PHIVE tools
       uses: ngmy/phive-install-action@0.13.0
-
     - name: Run test suite
       run: tools/phpunit
