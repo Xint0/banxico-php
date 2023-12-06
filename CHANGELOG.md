@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/Xint0/banxico-php/compare/1.0.3...master)
 
+### Changed
+
+- Ignore custom PHP results cache directory `.phpunit.cache`.
+- Set PHP 8.1 as minimum supported version.
+- Upgrade PHPUnit to 10.5.
+- Make test data provider methods `static`.
+- Set PHPStorm PHPCS timeout to 60 seconds.
+
 ## [1.0.3](https://github.com/Xint0/banxico-php/compare/1.0.3...1.0.3) 2023-08-02
 
 ### Changed
