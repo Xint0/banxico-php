@@ -1,8 +1,11 @@
 ARG PHP_VERSION=8.2
-FROM mlocati/php-extension-installer as php-extension-installer
+
 FROM php:${PHP_VERSION}-cli-alpine
-COPY --from=php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions \
+
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/install-php-extensions && \
+    install-php-extensions \
     @composer \
     xdebug \
     zip && \
