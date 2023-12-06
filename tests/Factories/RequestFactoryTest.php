@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class RequestFactoryTest extends TestCase
 {
-    public function createRequestProvider(): array
+    public static function createRequestProvider(): array
     {
         return [
             'oportuno' => [

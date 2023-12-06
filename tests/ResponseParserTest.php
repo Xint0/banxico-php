@@ -66,7 +66,7 @@ class ResponseParserTest extends TestCase
         $sut->parse($stubResponse);
     }
 
-    public function responseProvider(): array
+    public static function responseProvider(): array
     {
         return [
             'SF43718 date range' => [

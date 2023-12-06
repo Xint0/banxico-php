@@ -40,7 +40,7 @@ class SieClientTest extends TestCase
         ClassDiscovery::prependStrategy(MockClientStrategy::class);
     }
 
-    public function expectedRequestProvider(): array
+    public static function expectedRequestProvider(): array
     {
         return [
             'USD exchange rate liquidation date' => [
@@ -171,7 +171,7 @@ class SieClientTest extends TestCase
         static::assertEquals($expectedHeaders, $request->getHeaders());
     }
 
-    public function exchangeRateUsdLiquidationProvider(): array
+    public static function exchangeRateUsdLiquidationProvider(): array
     {
         return [
             'current' => [
@@ -208,7 +208,7 @@ class SieClientTest extends TestCase
         static::assertEquals($expected_result, $result);
     }
 
-    public function exchangeRateUsdDeterminationProvider(): array
+    public static function exchangeRateUsdDeterminationProvider(): array
     {
         return [
             'current' => [
