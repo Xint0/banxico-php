@@ -1,6 +1,6 @@
 services:
   php:
-    image: xint0/banxico-php/php
+    image: xint0/banxico-php
     build:
       dockerfile: docker/php/Dockerfile
       args:
@@ -9,7 +9,7 @@ services:
       - .:/usr/src/app
       - phive:/.phive
   phpstan:
-    image: xint0/banxico-php/phpstan
+    image: xint0/banxico-phpstan
     build:
       dockerfile: docker/phpstan/Dockerfile
       args:
