@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP\Tests\Factories;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Xint0\BanxicoPHP\Factories\RequestFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -63,13 +64,7 @@ class RequestFactoryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider createRequestProvider
-     *
-     * @param  array  $initial_state
-     * @param  array  $params
-     * @param  array  $final_state
-     */
+    #[DataProvider('createRequestProvider')]
     public function test_returns_expected_request(array $initial_state, array $params, array $final_state): void
     {
         $sut = new RequestFactory(...$initial_state);

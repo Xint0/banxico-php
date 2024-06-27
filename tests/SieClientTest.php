@@ -19,6 +19,7 @@ use Http\Discovery\ClassDiscovery;
 use Http\Discovery\Strategy\MockClientStrategy;
 use Http\Message\RequestMatcher\RequestMatcher;
 use Http\Mock\Client as MockHttpClient;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -140,7 +141,7 @@ class SieClientTest extends TestCase
         ];
     }
 
-    /** @dataProvider expectedRequestProvider */
+    #[DataProvider('expectedRequestProvider')]
     public function test_makes_expected_request(array $test_data, array $final_state): void
     {
         $expectedSeries = $final_state['series'];
@@ -195,7 +196,7 @@ class SieClientTest extends TestCase
         ];
     }
 
-    /** @dataProvider exchangeRateUsdLiquidationProvider */
+    #[DataProvider('exchangeRateUsdLiquidationProvider')]
     public function test_exchange_rate_usd_liquidation_method_returns_expected_result(
         array $params,
         $expected_result
@@ -229,7 +230,7 @@ class SieClientTest extends TestCase
         ];
     }
 
-    /** @dataProvider exchangeRateUsdDeterminationProvider */
+    #[DataProvider('exchangeRateUsdDeterminationProvider')]
     public function test_exchange_rate_usd_determination_method_returns_expected_result(
         array $params,
         $expected_result

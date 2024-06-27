@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Xint0\BanxicoPHP\ClienteBanxicoException;
 use JsonException;
 use Psr\Http\Message\ResponseInterface;
@@ -110,12 +111,7 @@ class ResponseParserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider responseProvider
-     *
-     * @param  array  $test_data
-     * @param  array  $final_state
-     */
+    #[DataProvider('responseProvider')]
     public function test_parse_method_returns_expected_result(array $test_data, array $final_state): void
     {
         $stubStream = $this->createStub(StreamInterface::class);
