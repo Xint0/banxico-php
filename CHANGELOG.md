@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Xint0/banxico-php/compare/1.0.3...master)
+## [Unreleased](https://github.com/Xint0/banxico-php/compare/2.0.0...master)
+
+## [2.0.0](https://github.com/Xint0/banxico-php/compare/1.0.3...2.0.0) 2024-06-27
 
 ### Changed
 
@@ -14,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make test data provider methods `static`.
 - Set PHPStorm PHPCS timeout to 60 seconds.
 
-## [1.0.3](https://github.com/Xint0/banxico-php/compare/1.0.3...1.0.3) 2023-08-02
+## [1.0.3](https://github.com/Xint0/banxico-php/compare/1.0.2...1.0.3) 2023-08-02
 
 ### Changed
 
