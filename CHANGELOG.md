@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/Xint0/banxico-php/compare/2.0.1...master)
 
+### Added
+
+- Include PHP 8.4 in ci test job version matrix.
+
 ## [2.0.1](https://github.com/Xint0/banxico-php/compare/2.0.0...2.0.1) 2024-11-30
 
 ### Changed
