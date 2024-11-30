@@ -2,22 +2,28 @@
 
 Cliente PHP para la API REST del Sistema de Información Económica (SIE) del Banco de México (Banxico).
 
+Su principal función es obtener los valores de las series **SF43718** (Tipo de cambio peso-dólar fecha de determinación)
+y **SF60653** (Tipo de cambio peso-dólar fecha liquidación).
+
+También se tiene un método para obtener una serie específica indicando el nombre de la serie y opcionalmente un rango de
+fechas.
+
+El código de la serie se puede consultar en [catálogo de series del SIE].
+
 ## Instalación
 
 ### Requisitos
 
-- PHP `7.4` o más reciente.
+- PHP `8.1` o más reciente.
 - Cliente HTTP conforme a [PSR-18], cualquiera de la [lista de clientes y adaptadores] de [php-http.org].
 
 ### Utilizar Composer
 
-Instalar con el adaptador para Guzzle 7 por ejemplo:
+Esta librería depende de librerías que implementen `psr/http-client-implementation` y `psr/http-factory-implementation`
+y utiliza `php-http/discovery` por lo que al requerirla en tu proyecto se revisan las librerías instaladas y si no
+encuentra las librerías requeridas, se instalarán automáticamente.
 
-```bash
-composer require xint0/banxico-php php-http/guzzle7-adapter
-```
-
-Si ya se tiene definido un cliente [PSR-18] en el proyecto, se puede instalar solo el cliente:
+Para agregarla como dependencia en tu proyecto:
 
 ```bash
 composer require xint0/banxico-php
@@ -69,15 +75,21 @@ $tipo_de_cambio_2021_09_16 = $cliente->exchangeRateUsdLiquidation('2021-09-16');
  * ];
  */
 $tipo_de_cambio_agosto_2021 = $cliente->exchangeRateUsdLiquidation('2021-08-01', '2021-08-31');
+
+/*
+ * Consulta de una serie específica indicando el código de la serie y un rango de fechas.
+ */
+$tasa_objetivo = $cliente->fetchSeries('SF61745', '2024-01-01', '2024-01-31');
 ```
 
 ## Licenciamiento
 
-Los derechos de autor de este software pertenecen a su autor Rogelio Jacinto. Copyright 2018-2021 Rogelio Jacinto. Todos
+Los derechos de autor de este software pertenecen a su autor Rogelio Jacinto. Copyright 2018-2024 Rogelio Jacinto. Todos
 los derechos reservados.
 
 Este paquete es software libre, se puede distribuir y/o modificarse bajo los términos de la [Licencia MIT].
 
+[catálogo de series del SIE]:https://www.banxico.org.mx/SieAPIRest/service/v1/doc/catalogoSeries
 [PSR-18]:https://www.php-fig.org/psr/psr-18/
 [php-http.org]:https://php-http.org
 [lista de clientes y adaptadores]:https://docs.php-http.org/en/latest/clients.html
