@@ -1,10 +1,19 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/Xint0/banxico-php/compare/2.0.0...master)
+## [Unreleased](https://github.com/Xint0/banxico-php/compare/2.0.1...master)
+
+## [2.0.1](https://github.com/Xint0/banxico-php/compare/2.0.0...2.0.1) 2024-11-30
+
+### Changed
+
+- Update package description, installation instructions, and add `SieClient@fetchSeries` example for fetching specific
+series values in README.
+- Update dev tools as of 2024-11-30.
 
 ## [2.0.0](https://github.com/Xint0/banxico-php/compare/1.0.3...2.0.0) 2024-06-27
 
