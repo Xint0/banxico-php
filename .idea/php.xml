@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="MessDetector">
+    <phpmd_settings>
+      <phpmd_by_interpreter asDefaultInterpreter="true" interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" timeout="30000" />
+    </phpmd_settings>
+  </component>
   <component name="MessDetectorOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
@@ -15,6 +20,7 @@
     <phpcs_settings>
       <PhpCSConfiguration beautifier_path="$PROJECT_DIR$/tools/phpcbf" tool_path="$PROJECT_DIR$/tools/phpcs" />
       <phpcs_by_interpreter interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" beautifier_path="tools/phpcbf" standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" tool_path="tools/phpcs" timeout="60000" />
+      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" beautifier_path="tools/phpcbf" standards="MySource;PEAR;PSR1;PSR12;PSR2;Squiz;Zend" tool_path="tools/phpcs" timeout="60000" />
     </phpcs_settings>
   </component>
   <component name="PhpExternalFormatter">
@@ -239,9 +245,6 @@
       <extension name="odbc" enabled="false" />
       <extension name="pcntl" enabled="false" />
       <extension name="pdflib" enabled="false" />
-      <extension name="pdo_ibm" enabled="false" />
-      <extension name="pdo_mysql" enabled="false" />
-      <extension name="pdo_pgsql" enabled="false" />
       <extension name="pgsql" enabled="false" />
       <extension name="pspell" enabled="false" />
       <extension name="pthreads" enabled="false" />
@@ -280,6 +283,7 @@
   <component name="PhpStan">
     <PhpStan_settings>
       <phpstan_by_interpreter interpreter_id="445ffe79-f3ea-4ff9-b10f-a5e1510bbbf4" tool_path="/composer/vendor/bin/phpstan" timeout="60000" />
+      <phpstan_by_interpreter asDefaultInterpreter="true" interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" timeout="60000" />
     </PhpStan_settings>
   </component>
   <component name="PhpStanOptionsConfiguration">
@@ -293,6 +297,11 @@
       <PhpUnitSettings load_method="PHPUNIT_PHAR" configuration_file_path="$PROJECT_DIR$/phpunit.xml" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" phpunit_phar_path="$PROJECT_DIR$/tools/phpunit.phar" use_configuration_file="true" />
       <phpunit_by_interpreter interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" load_method="PHPUNIT_PHAR" configuration_file_path="/usr/src/app/phpunit.xml" custom_loader_path="/usr/src/app/vendor/autoload.php" phpunit_phar_path="tools/phpunit" use_configuration_file="true" />
     </phpunit_settings>
+  </component>
+  <component name="Psalm">
+    <Psalm_settings>
+      <psalm_fixer_by_interpreter asDefaultInterpreter="true" interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" timeout="60000" />
+    </Psalm_settings>
   </component>
   <component name="PsalmOptionsConfiguration">
     <option name="transferred" value="true" />
