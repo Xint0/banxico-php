@@ -5,7 +5,6 @@
       <tool tool_name="PHPUnit">
         <cache>
           <versions>
-            <info id="Local/tools/phpunit.phar" version="10.5.46" />
             <info id="interpreter-e48d4ea8-85db-499d-9576-bc53f99192a8" version="10.5.46" />
           </versions>
         </cache>
