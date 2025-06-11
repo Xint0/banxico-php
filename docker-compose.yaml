@@ -7,7 +7,7 @@ services:
         PHP_VERSION: ${PHP_VERSION:-8.2}
     volumes:
       - .:/usr/src/app
-      - phive:/.phive
+      - phive:/root/.phive
   phpstan:
     image: xint0/banxico-phpstan
     build:
