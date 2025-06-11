@@ -9,7 +9,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions && \
     @composer \
     xdebug \
     zip && \
-    apk add gpg gnupg-dirmngr gpg-agent && \
+    apk add git gpg gnupg-dirmngr gpg-agent && \
     wget -O phive.phar https://phar.io/releases/phive.phar && \
     wget -O phive.phar.asc https://phar.io/releases/phive.phar.asc && \
     gpg --keyserver hkps://keys.openpgp.org --recv-keys 0x9D8A98B29B2D5D79 && \
