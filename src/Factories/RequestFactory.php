@@ -47,8 +47,6 @@ class RequestFactory
      * @param string $series  The series identifier.
      * @param string|null $startDate  The start date in YYYY-MM-DD format, optional.
      * @param string|null $endDate  The end date in YYYY-MM-DD format, optional.
-     *
-     * @return RequestInterface
      */
     public function createRequest(string $series, ?string $startDate = null, ?string $endDate = null): RequestInterface
     {
@@ -69,8 +67,6 @@ class RequestFactory
      * Normalize input string as date using `YYYY-MM-DD` format. If parsing fails returns `null`.
      *
      * @param string|null $input Date string.
-     *
-     * @return string|null
      */
     private static function normalizeDate(?string $input): ?string
     {
