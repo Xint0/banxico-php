@@ -40,7 +40,7 @@ class HttpClientFactory
         array $plugins = [],
         ClientInterface $httpClient = null,
     ): ClientInterface {
-        if (! $httpClient) {
+        if (! $httpClient instanceof ClientInterface) {
             $httpClient = Psr18ClientDiscovery::find();
         }
         $plugins[] = new HeaderSetPlugin([
