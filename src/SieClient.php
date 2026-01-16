@@ -42,9 +42,9 @@ class SieClient
     }
 
     /**
-     * @param  string  $series
-     * @param  string|null  $start_date
-     * @param  string|null  $end_date
+     * @param  string  $series  The data series ID.
+     * @param  string|null  $start_date  The start date in YYYY-MM-DD format, optional.
+     * @param  string|null  $end_date  The end date in YYYY-MM-DD format, optional.
      *
      * @return array|mixed
      */
@@ -61,8 +61,8 @@ class SieClient
     }
 
     /**
-     * @param  string|null  $start_date
-     * @param  string|null  $end_date
+     * @param  string|null  $start_date  The start date in YYYY-MM-DD format, optional.
+     * @param  string|null  $end_date  The end date in YYYY-MM-DD format, optional.
      *
      * @return array|mixed
      */
@@ -72,8 +72,8 @@ class SieClient
     }
 
     /**
-     * @param  string|null  $start_date
-     * @param  string|null  $end_date
+     * @param  string|null  $start_date  The start date in YYYY-MM-DD format, optional.
+     * @param  string|null  $end_date  The end date in YYYY-MM-DD format, optional.
      *
      * @return array|mixed
      */

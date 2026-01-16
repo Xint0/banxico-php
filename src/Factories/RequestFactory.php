@@ -29,11 +29,10 @@ class RequestFactory
     private readonly UriFactoryInterface $psrUriFactory;
 
     /**
-     * RequestFactory constructor.
+     * Creates a new instance.
      *
-     * If `$baseUri` is not specified the default value is `https://www.banxico.org.mx/SieAPIRest/service/v1`.
-     *
-     * @param  string|null  $baseUri
+     * @param string|null $baseUri The base URI. Defaults to https://www.banxico.org.mx/SieAPIRest/service/v1 if not
+     * specified.
      */
     public function __construct(?string $baseUri = null)
     {
@@ -43,9 +42,11 @@ class RequestFactory
     }
 
     /**
-     * @param  string  $series
-     * @param  string|null  $startDate
-     * @param  string|null  $endDate
+     * Create service request.
+     *
+     * @param string $series  The series identifier.
+     * @param string|null $startDate  The start date in YYYY-MM-DD format, optional.
+     * @param string|null $endDate  The end date in YYYY-MM-DD format, optional.
      *
      * @return RequestInterface
      */
@@ -67,7 +68,7 @@ class RequestFactory
     /**
      * Normalize input string as date using `YYYY-MM-DD` format. If parsing fails returns `null`.
      *
-     * @param  string|null  $input
+     * @param string|null $input Date string.
      *
      * @return string|null
      */
