@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  push:
+    branches: ['2.x']
+  pull_request:
+    branches: ['2.x']
+  schedule:
+    - cron: '0 16 * * 0'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.1','8.2','8.3','8.4','8.5']
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        coverage: none
+        tools: composer
+    - name: Get compose cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+        restore-keys: ${{ runner.os }}-composer-
+    - name: Install dependencies
+      run: composer install --no-interaction --prefer-dist --no-progress --no-suggest
+    - name: Install PHIVE tools
+      uses: ngmy/phive-install-action@0.13.0
+    - name: Run test suite
+      run: tools/phpunit
