@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="LaravelPint">
+    <laravel_pint_settings>
+      <laravel_pint_by_interpreter asDefaultInterpreter="true" interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8">
+        <option name="timeout" value="30000" />
+      </laravel_pint_by_interpreter>
+    </laravel_pint_settings>
+  </component>
   <component name="MessDetector">
     <phpmd_settings>
       <phpmd_by_interpreter asDefaultInterpreter="true" interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" timeout="30000" />
@@ -16,6 +23,11 @@
     <option name="highlightLevel" value="WARNING" />
     <option name="showSniffs" value="true" />
     <option name="transferred" value="true" />
+  </component>
+  <component name="PhpCSFixer">
+    <phpcsfixer_settings>
+      <phpcs_fixer_by_interpreter asDefaultInterpreter="true" interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" timeout="30000" />
+    </phpcsfixer_settings>
   </component>
   <component name="PhpCodeSniffer">
     <phpcs_settings>
@@ -50,6 +62,8 @@
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php73" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php80" />
       <path value="$PROJECT_DIR$/vendor/webmozart/assert" />
+      <path value="$PROJECT_DIR$/vendor/phpstan/phpstan" />
+      <path value="$PROJECT_DIR$/vendor/rector/rector" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
@@ -286,12 +300,13 @@
   <component name="PhpStan">
     <PhpStan_settings>
       <phpstan_by_interpreter interpreter_id="445ffe79-f3ea-4ff9-b10f-a5e1510bbbf4" tool_path="/composer/vendor/bin/phpstan" timeout="60000" />
-      <phpstan_by_interpreter asDefaultInterpreter="true" interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" timeout="60000" />
+      <phpstan_by_interpreter asDefaultInterpreter="true" interpreter_id="e48d4ea8-85db-499d-9576-bc53f99192a8" tool_path="/usr/src/app/vendor/bin/phpstan" timeout="60000" />
+      <PhpStanConfiguration tool_path="$PROJECT_DIR$/vendor/bin/phpstan" />
     </PhpStan_settings>
   </component>
   <component name="PhpStanOptionsConfiguration">
     <option name="autoload" value="/app/vendor/autoload.php" />
-    <option name="config" value="/app/phpstan.neon" />
+    <option name="config" value="$PROJECT_DIR$/phpstan.neon.dist" />
     <option name="level" value="5" />
     <option name="transferred" value="true" />
   </component>
