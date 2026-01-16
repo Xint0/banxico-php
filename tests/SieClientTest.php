@@ -37,7 +37,6 @@ class SieClientTest extends TestCase
 
     protected function setUp(): void
     {
-        parent::setUp();
         ClassDiscovery::prependStrategy(MockClientStrategy::class);
     }
 

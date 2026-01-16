@@ -28,7 +28,7 @@ class ResponseParser
     private const HTTP_STATUS_SUCCESS = 200;
 
     /**
-     * @param  ResponseInterface  $response
+     * @param  ResponseInterface  $response  The HTTP response.
      *
      * @return array|mixed
      */
@@ -55,7 +55,7 @@ class ResponseParser
     }
 
     /**
-     * @param  array  $json
+     * @param  array  $json  The decoded JSON array
      *
      * @return array|mixed
      */

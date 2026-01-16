@@ -28,9 +28,9 @@ class SieClient
     public const SERIES_USD_EXCHANGE_RATE_LIQUIDATION = 'SF60653';
     private const DEFAULT_PARAMS = ['base_uri' => 'https://www.banxico.org.mx/SieAPIRest/service/v1'];
 
-    private ClientInterface $httpClient;
-    private RequestFactory $requestFactory;
-    private ResponseParser $responseParser;
+    private readonly ClientInterface $httpClient;
+    private readonly RequestFactory $requestFactory;
+    private readonly ResponseParser $responseParser;
     private array $params;
 
     public function __construct(string $token, ?ClientInterface $httpClient = null, array $params = [])
@@ -42,9 +42,9 @@ class SieClient
     }
 
     /**
-     * @param  string  $series
-     * @param  string|null  $start_date
-     * @param  string|null  $end_date
+     * @param  string  $series  The data series ID.
+     * @param  string|null  $start_date  The start date in YYYY-MM-DD format, optional.
+     * @param  string|null  $end_date  The end date in YYYY-MM-DD format, optional.
      *
      * @return array|mixed
      */
@@ -61,8 +61,8 @@ class SieClient
     }
 
     /**
-     * @param  string|null  $start_date
-     * @param  string|null  $end_date
+     * @param  string|null  $start_date  The start date in YYYY-MM-DD format, optional.
+     * @param  string|null  $end_date  The end date in YYYY-MM-DD format, optional.
      *
      * @return array|mixed
      */
@@ -72,8 +72,8 @@ class SieClient
     }
 
     /**
-     * @param  string|null  $start_date
-     * @param  string|null  $end_date
+     * @param  string|null  $start_date  The start date in YYYY-MM-DD format, optional.
+     * @param  string|null  $end_date  The end date in YYYY-MM-DD format, optional.
      *
      * @return array|mixed
      */

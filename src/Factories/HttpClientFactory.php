@@ -34,12 +34,13 @@ class HttpClientFactory
      * @param  string  $token  Token de autenticación de la API REST Banxico.
      * @param  Plugin[]  $plugins  Lista de plugins del cliente HTTP.
      * @param  ClientInterface|null  $httpClient  El cliente HTTP base.
-     *
-     * @return ClientInterface
      */
-    public static function create(string $token, array $plugins = [], ClientInterface $httpClient = null): ClientInterface
-    {
-        if (! $httpClient) {
+    public static function create(
+        string $token,
+        array $plugins = [],
+        ClientInterface $httpClient = null,
+    ): ClientInterface {
+        if (! $httpClient instanceof ClientInterface) {
             $httpClient = Psr18ClientDiscovery::find();
         }
         $plugins[] = new HeaderSetPlugin([
