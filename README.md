@@ -14,7 +14,7 @@ El código de la serie se puede consultar en [catálogo de series del SIE].
 
 ### Requisitos
 
-- PHP `8.1` o más reciente.
+- PHP `8.2` o más reciente.
 - Cliente HTTP conforme a [PSR-18], cualquiera de la [lista de clientes y adaptadores] de [php-http.org].
 
 ### Utilizar Composer
