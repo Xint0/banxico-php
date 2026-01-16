@@ -24,9 +24,9 @@ use Psr\Http\Message\UriFactoryInterface;
  */
 class RequestFactory
 {
-    private string $baseUri;
-    private RequestFactoryInterface $psrRequestFactory;
-    private UriFactoryInterface $psrUriFactory;
+    private readonly string $baseUri;
+    private readonly RequestFactoryInterface $psrRequestFactory;
+    private readonly UriFactoryInterface $psrUriFactory;
 
     /**
      * RequestFactory constructor.
