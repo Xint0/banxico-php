@@ -16,6 +16,7 @@ return RectorConfig::configure()
         codingStyle: true,
         typeDeclarations: true,
         typeDeclarationDocblocks: true,
+        phpunitCodeQuality: true,
     )
     ->withImportNames()
     ->withTreatClassesAsFinal();
