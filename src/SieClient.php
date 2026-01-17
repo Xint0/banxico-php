@@ -35,6 +35,7 @@ class SieClient
     private readonly RequestFactory $requestFactory;
 
     private readonly ResponseParser $responseParser;
+
     /**
      * @var mixed[]
      */
