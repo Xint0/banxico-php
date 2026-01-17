@@ -14,65 +14,72 @@ declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP\Tests\Factories;
 
+use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Xint0\BanxicoPHP\Factories\RequestFactory;
 use PHPUnit\Framework\TestCase;
 
-class RequestFactoryTest extends TestCase
+final class RequestFactoryTest extends TestCase
 {
-    public static function createRequestProvider(): array
+    /**
+     * @return Iterator<string, array<string, array<string>>>
+     */
+    public static function createRequestProvider(): Iterator
     {
-        return [
-            'oportuno' => [
-                'initial_state' => [],
-                'params' => [
-                    'SF43718',
-                ],
-                'final_state' => [
-                    'expected_scheme' => 'https',
-                    'expected_host' => 'www.banxico.org.mx',
-                    'expected_path' => '/SieAPIRest/service/v1/series/SF43718/datos/oportuno',
-                ],
+        yield 'oportuno' => [
+            'initial_state' => [],
+            'params' => [
+                'SF43718',
             ],
-            'single date' => [
-                'initial_state' => [
-                    'http://www.example.com',
-                ],
-                'params' => [
-                    'SF60653',
-                    '2020-12-01',
-                ],
-                'final_state' => [
-                    'expected_scheme' => 'http',
-                    'expected_host' => 'www.example.com',
-                    'expected_path' => '/series/SF60653/datos/2020-12-01/2020-12-01',
-                ],
+            'final_state' => [
+                'expected_scheme' => 'https',
+                'expected_host' => 'www.banxico.org.mx',
+                'expected_path' => '/SieAPIRest/service/v1/series/SF43718/datos/oportuno',
             ],
-            'date range' => [
-                'initial_state' => [],
-                'params' => [
-                    'SF60653',
-                    '2020-11-26',
-                    '2020-11-27',
-                ],
-                'final_state' => [
-                    'expected_scheme' => 'https',
-                    'expected_host' => 'www.banxico.org.mx',
-                    'expected_path' => '/SieAPIRest/service/v1/series/SF60653/datos/2020-11-26/2020-11-27',
-                ],
+        ];
+        yield 'single date' => [
+            'initial_state' => [
+                'http://www.example.com',
+            ],
+            'params' => [
+                'SF60653',
+                '2020-12-01',
+            ],
+            'final_state' => [
+                'expected_scheme' => 'http',
+                'expected_host' => 'www.example.com',
+                'expected_path' => '/series/SF60653/datos/2020-12-01/2020-12-01',
+            ],
+        ];
+        yield 'date range' => [
+            'initial_state' => [],
+            'params' => [
+                'SF60653',
+                '2020-11-26',
+                '2020-11-27',
+            ],
+            'final_state' => [
+                'expected_scheme' => 'https',
+                'expected_host' => 'www.banxico.org.mx',
+                'expected_path' => '/SieAPIRest/service/v1/series/SF60653/datos/2020-11-26/2020-11-27',
             ],
         ];
     }
 
+    /**
+     * @param  string[]  $initial_state
+     * @param  string[]  $params
+     * @param  array<string, string>  $final_state
+     */
     #[DataProvider('createRequestProvider')]
     public function test_returns_expected_request(array $initial_state, array $params, array $final_state): void
     {
         $sut = new RequestFactory(...$initial_state);
         $result = $sut->createRequest(...$params);
-        static::assertEquals('GET', $result->getMethod());
+        $this->assertSame('GET', $result->getMethod());
         $resultUri = $result->getUri();
-        static::assertEquals($final_state['expected_scheme'], $resultUri->getScheme());
-        static::assertEquals($final_state['expected_host'], $resultUri->getHost());
-        static::assertEquals($final_state['expected_path'], $resultUri->getPath());
+        $this->assertEquals($final_state['expected_scheme'], $resultUri->getScheme());
+        $this->assertEquals($final_state['expected_host'], $resultUri->getHost());
+        $this->assertEquals($final_state['expected_path'], $resultUri->getPath());
     }
 }

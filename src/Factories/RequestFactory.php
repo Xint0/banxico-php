@@ -25,13 +25,15 @@ use Psr\Http\Message\UriFactoryInterface;
 class RequestFactory
 {
     private readonly string $baseUri;
+
     private readonly RequestFactoryInterface $psrRequestFactory;
+
     private readonly UriFactoryInterface $psrUriFactory;
 
     /**
      * Creates a new instance.
      *
-     * @param string|null $baseUri The base URI. Defaults to https://www.banxico.org.mx/SieAPIRest/service/v1 if not
+     * @param  string|null  $baseUri  The base URI. Defaults to https://www.banxico.org.mx/SieAPIRest/service/v1 if not
      * specified.
      */
     public function __construct(?string $baseUri = null)
@@ -44,31 +46,32 @@ class RequestFactory
     /**
      * Create service request.
      *
-     * @param string $series  The series identifier.
-     * @param string|null $startDate  The start date in YYYY-MM-DD format, optional.
-     * @param string|null $endDate  The end date in YYYY-MM-DD format, optional.
+     * @param  string  $series  The series identifier.
+     * @param  string|null  $startDate  The start date in YYYY-MM-DD format, optional.
+     * @param  string|null  $endDate  The end date in YYYY-MM-DD format, optional.
      */
     public function createRequest(string $series, ?string $startDate = null, ?string $endDate = null): RequestInterface
     {
-        $normalizedStartDate = self::normalizeDate($startDate);
-        $normalizedEndDate = self::normalizeDate($endDate);
+        $normalizedStartDate = $this->normalizeDate($startDate);
+        $normalizedEndDate = $this->normalizeDate($endDate);
         $suffix = 'oportuno';
         if ($normalizedStartDate !== null) {
             $suffix = $normalizedStartDate . (
-                    $normalizedEndDate === null ? "/$normalizedStartDate" : "/$normalizedEndDate"
+                $normalizedEndDate === null ? '/' . $normalizedStartDate : '/' . $normalizedEndDate
                 );
         }
 
-        $requestUri = $this->psrUriFactory->createUri("$this->baseUri/series/$series/datos/$suffix");
+        $requestUri = $this->psrUriFactory
+            ->createUri(sprintf('%s/series/%s/datos/%s', $this->baseUri, $series, $suffix));
         return $this->psrRequestFactory->createRequest('GET', $requestUri);
     }
 
     /**
      * Normalize input string as date using `YYYY-MM-DD` format. If parsing fails returns `null`.
      *
-     * @param string|null $input Date string.
+     * @param  string|null  $input  Date string.
      */
-    private static function normalizeDate(?string $input): ?string
+    private function normalizeDate(?string $input): ?string
     {
         if ($input === null) {
             return null;

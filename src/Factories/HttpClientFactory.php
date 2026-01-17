@@ -22,6 +22,7 @@ use Psr\Http\Client\ClientInterface;
 use Http\Message\Authentication\Header;
 use Http\Client\Common\Plugin\HeaderSetPlugin;
 use Http\Client\Common\PluginClient;
+use SensitiveParameter;
 
 /**
  * Creates the HTTP client
@@ -36,13 +37,14 @@ class HttpClientFactory
      * @param  ClientInterface|null  $httpClient  El cliente HTTP base.
      */
     public static function create(
-        string $token,
+        #[SensitiveParameter]string $token,
         array $plugins = [],
         ClientInterface $httpClient = null,
     ): ClientInterface {
         if (! $httpClient instanceof ClientInterface) {
             $httpClient = Psr18ClientDiscovery::find();
         }
+
         $plugins[] = new HeaderSetPlugin([
             'User-Agent' => 'Xint0 BanxicoPHP/1.0.0',
             'Accept' => 'application/json',

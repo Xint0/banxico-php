@@ -20,7 +20,7 @@ use Psr\Http\Client\ClientInterface;
 use Xint0\BanxicoPHP\Factories\HttpClientFactory;
 use PHPUnit\Framework\TestCase;
 
-class HttpClientFactoryTest extends TestCase
+final class HttpClientFactoryTest extends TestCase
 {
     public function test_creates_http_client(): void
     {

@@ -25,12 +25,20 @@ use Xint0\BanxicoPHP\Factories\RequestFactory;
 class SieClient
 {
     public const SERIES_USD_EXCHANGE_RATE_DETERMINATION = 'SF43718';
+
     public const SERIES_USD_EXCHANGE_RATE_LIQUIDATION = 'SF60653';
+
     private const DEFAULT_PARAMS = ['base_uri' => 'https://www.banxico.org.mx/SieAPIRest/service/v1'];
 
     private readonly ClientInterface $httpClient;
+
     private readonly RequestFactory $requestFactory;
+
     private readonly ResponseParser $responseParser;
+
+    /**
+     * @var mixed[]
+     */
     private array $params;
 
     public function __construct(string $token, ?ClientInterface $httpClient = null, array $params = [])
