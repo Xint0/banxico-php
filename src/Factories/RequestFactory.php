@@ -50,8 +50,8 @@ class RequestFactory
      */
     public function createRequest(string $series, ?string $startDate = null, ?string $endDate = null): RequestInterface
     {
-        $normalizedStartDate = self::normalizeDate($startDate);
-        $normalizedEndDate = self::normalizeDate($endDate);
+        $normalizedStartDate = $this->normalizeDate($startDate);
+        $normalizedEndDate = $this->normalizeDate($endDate);
         $suffix = 'oportuno';
         if ($normalizedStartDate !== null) {
             $suffix = $normalizedStartDate . (
@@ -68,7 +68,7 @@ class RequestFactory
      *
      * @param string|null $input Date string.
      */
-    private static function normalizeDate(?string $input): ?string
+    private function normalizeDate(?string $input): ?string
     {
         if ($input === null) {
             return null;
