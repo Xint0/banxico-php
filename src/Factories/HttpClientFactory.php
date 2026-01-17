@@ -43,6 +43,7 @@ class HttpClientFactory
         if (! $httpClient instanceof ClientInterface) {
             $httpClient = Psr18ClientDiscovery::find();
         }
+
         $plugins[] = new HeaderSetPlugin([
             'User-Agent' => 'Xint0 BanxicoPHP/1.0.0',
             'Accept' => 'application/json',
