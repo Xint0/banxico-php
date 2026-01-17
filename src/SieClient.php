@@ -37,10 +37,15 @@ class SieClient
     private readonly ResponseParser $responseParser;
 
     /**
-     * @var mixed[]
+     * @var array<string, mixed>
      */
     private array $params;
 
+    /**
+     * @param  string  $token
+     * @param  ClientInterface|null  $httpClient
+     * @param  array<string, mixed>  $params
+     */
     public function __construct(string $token, ?ClientInterface $httpClient = null, array $params = [])
     {
         $this->params = self::DEFAULT_PARAMS + $params;
