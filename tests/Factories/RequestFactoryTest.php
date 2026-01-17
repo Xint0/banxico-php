@@ -20,6 +20,9 @@ use PHPUnit\Framework\TestCase;
 
 class RequestFactoryTest extends TestCase
 {
+    /**
+     * @return array<string, array<string, string[]>>
+     */
     public static function createRequestProvider(): array
     {
         return [
@@ -64,6 +67,11 @@ class RequestFactoryTest extends TestCase
         ];
     }
 
+    /**
+     * @param string[] $initial_state
+     * @param string[] $params
+     * @param array<string, string> $final_state
+     */
     #[DataProvider('createRequestProvider')]
     public function test_returns_expected_request(array $initial_state, array $params, array $final_state): void
     {

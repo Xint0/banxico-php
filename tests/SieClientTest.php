@@ -40,6 +40,9 @@ class SieClientTest extends TestCase
         ClassDiscovery::prependStrategy(MockClientStrategy::class);
     }
 
+    /**
+     * @return array<string, array<string, array<string, string|string[]>>>
+     */
     public static function expectedRequestProvider(): array
     {
         return [
@@ -140,6 +143,10 @@ class SieClientTest extends TestCase
         ];
     }
 
+    /**
+     * @param array<string, string[]|string> $test_data
+     * @param array<string, string> $final_state
+     */
     #[DataProvider('expectedRequestProvider')]
     public function test_makes_expected_request(array $test_data, array $final_state): void
     {
@@ -171,6 +178,9 @@ class SieClientTest extends TestCase
         static::assertEquals($expectedHeaders, $request->getHeaders());
     }
 
+    /**
+     * @return array<string, array<string, string|string[]>>
+     */
     public static function exchangeRateUsdLiquidationProvider(): array
     {
         return [
@@ -195,6 +205,9 @@ class SieClientTest extends TestCase
         ];
     }
 
+    /**
+     * @param string[] $params
+     */
     #[DataProvider('exchangeRateUsdLiquidationProvider')]
     public function test_exchange_rate_usd_liquidation_method_returns_expected_result(
         array $params,
@@ -208,6 +221,9 @@ class SieClientTest extends TestCase
         static::assertEquals($expected_result, $result);
     }
 
+    /**
+     * @return array<string, array<string, string|string[]>>
+     */
     public static function exchangeRateUsdDeterminationProvider(): array
     {
         return [
@@ -229,6 +245,9 @@ class SieClientTest extends TestCase
         ];
     }
 
+    /**
+     * @param string[] $params
+     */
     #[DataProvider('exchangeRateUsdDeterminationProvider')]
     public function test_exchange_rate_usd_determination_method_returns_expected_result(
         array $params,
@@ -328,6 +347,9 @@ class SieClientTest extends TestCase
         return $mockHttpClient;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     private function mockHttpClientResponse(MockHttpClient $mockHttpClient, array $params): void
     {
         $series = $params['series'];

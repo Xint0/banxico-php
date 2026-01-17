@@ -55,7 +55,7 @@ class ResponseParser
     }
 
     /**
-     * @param  array  $json  The decoded JSON array
+     * @param array<string, mixed> $json The decoded JSON array
      *
      * @return array|mixed
      */

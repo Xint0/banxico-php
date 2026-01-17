@@ -67,6 +67,9 @@ class ResponseParserTest extends TestCase
         $sut->parse($stubResponse);
     }
 
+    /**
+     * @return array<string, array<string, array<string, string|array<string, string>>>>
+     */
     public static function responseProvider(): array
     {
         return [
@@ -111,6 +114,10 @@ class ResponseParserTest extends TestCase
         ];
     }
 
+    /**
+     * @param array<string, string> $test_data
+     * @param array<string, array<string, string>|string> $final_state
+     */
     #[DataProvider('responseProvider')]
     public function test_parse_method_returns_expected_result(array $test_data, array $final_state): void
     {

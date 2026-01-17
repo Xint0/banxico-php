@@ -31,6 +31,9 @@ class SieClient
     private readonly ClientInterface $httpClient;
     private readonly RequestFactory $requestFactory;
     private readonly ResponseParser $responseParser;
+    /**
+     * @var mixed[]
+     */
     private array $params;
 
     public function __construct(string $token, ?ClientInterface $httpClient = null, array $params = [])
