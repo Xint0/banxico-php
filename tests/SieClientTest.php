@@ -96,7 +96,7 @@ class SieClientTest extends TestCase
             'USD exchange rate liquidation date, sigle day' => [
                 'test_data' => [
                     'method' => 'exchangeRateUsdLiquidation',
-                    'params' => [ '2020-12-01' ],
+                    'params' => ['2020-12-01'],
                 ],
                 'final_state' => [
                     'series' => 'SF60653',
@@ -106,7 +106,7 @@ class SieClientTest extends TestCase
             'USD exchange rate determination date, sigle day' => [
                 'test_data' => [
                     'method' => 'exchangeRateUsdDetermination',
-                    'params' => [ '2020-11-27' ],
+                    'params' => ['2020-11-27'],
                 ],
                 'final_state' => [
                     'series' => 'SF43718',
@@ -126,7 +126,7 @@ class SieClientTest extends TestCase
             'Fetch series SF43718, date range' => [
                 'test_data' => [
                     'method' => 'fetchSeries',
-                    'params' => ['SF43718','2020-11-26','2020-11-27'],
+                    'params' => ['SF43718', '2020-11-26', '2020-11-27'],
                 ],
                 'final_state' => [
                     'series' => 'SF43718',
@@ -136,7 +136,7 @@ class SieClientTest extends TestCase
             'Fetch series SF60653, single day' => [
                 'test_data' => [
                     'method' => 'fetchSeries',
-                    'params' => ['SF60653','2020-12-01'],
+                    'params' => ['SF60653', '2020-12-01'],
                 ],
                 'final_state' => [
                     'series' => 'SF60653',
@@ -147,22 +147,27 @@ class SieClientTest extends TestCase
     }
 
     /**
-     * @param array<string, string[]|string> $test_data
-     * @param array<string, string> $final_state
+     * @param  array<string, string[]|string>  $test_data
+     * @param  array<string, string>  $final_state
      */
     #[DataProvider('expectedRequestProvider')]
     public function test_makes_expected_request(array $test_data, array $final_state): void
     {
         $expectedSeries = $final_state['series'];
         $expectedUriSuffix = $final_state['uri_suffix'];
-        $expectedUri = "https://www.banxico.org.mx/SieAPIRest/service/v1/series/$expectedSeries/datos/$expectedUriSuffix";
+        $expectedUri =
+            sprintf(
+                'https://www.banxico.org.mx/SieAPIRest/service/v1/series/%s/datos/%s',
+                $expectedSeries,
+                $expectedUriSuffix,
+            );
         $expectedHeaders = [
             'User-Agent' => ['Xint0 BanxicoPHP/1.0.0'],
             'Accept' => ['application/json'],
             'Bmx-Token' => ['test-token'],
             'Host' => ['www.banxico.org.mx'],
-            'Accept-Encoding' => ['gzip','deflate'],
-            'TE' => ['gzip','deflate','chunked'],
+            'Accept-Encoding' => ['gzip', 'deflate'],
+            'TE' => ['gzip', 'deflate', 'chunked'],
         ];
 
         /** @var MockHttpClient $mockHttpClient */
@@ -209,13 +214,11 @@ class SieClientTest extends TestCase
     }
 
     /**
-     * @param string[] $params
+     * @param  string[]  $params
      */
     #[DataProvider('exchangeRateUsdLiquidationProvider')]
-    public function test_exchange_rate_usd_liquidation_method_returns_expected_result(
-        array $params,
-        string|array $expected_result
-    ): void {
+    public function test_exchange_rate_usd_liquidation_method_returns_expected_result(array $params, string | array $expected_result): void
+    {
         $mockHttpClient = $this->mockHttpClient();
         $sut = new SieClient('test-token', $mockHttpClient);
 
@@ -235,7 +238,7 @@ class SieClientTest extends TestCase
                 'expected_result' => '20.0777',
             ],
             'date range' => [
-                'params' => ['2020-11-26','2020-11-27'],
+                'params' => ['2020-11-26', '2020-11-27'],
                 'expected_result' => [
                     '2020-11-26' => '20.0467',
                     '2020-11-27' => '20.0777',
@@ -249,13 +252,11 @@ class SieClientTest extends TestCase
     }
 
     /**
-     * @param string[] $params
+     * @param  string[]  $params
      */
     #[DataProvider('exchangeRateUsdDeterminationProvider')]
-    public function test_exchange_rate_usd_determination_method_returns_expected_result(
-        array $params,
-        string|array $expected_result
-    ): void {
+    public function test_exchange_rate_usd_determination_method_returns_expected_result(array $params, string | array $expected_result): void
+    {
         $mockHttpClient = $this->mockHttpClient();
         $sut = new SieClient('test-token', $mockHttpClient);
 
@@ -291,18 +292,22 @@ class SieClientTest extends TestCase
         $streamSF60653LatestStub = $this->createStub(StreamInterface::class);
         $streamSF60653LatestStub->method('getContents')->willReturn(file_get_contents(self::JSON_PATH_SF60653_LATEST));
         $streamSF60653DateRangeStub = $this->createStub(StreamInterface::class);
-        $streamSF60653DateRangeStub->method('getContents')->willReturn(file_get_contents(self::JSON_PATH_SF60653_DATE_RANGE));
+        $streamSF60653DateRangeStub->method('getContents')->willReturn(
+            file_get_contents(self::JSON_PATH_SF60653_DATE_RANGE),
+        );
         $streamSF43718LatestStub = $this->createStub(StreamInterface::class);
         $streamSF43718LatestStub->method('getContents')->willReturn(file_get_contents(self::JSON_PATH_SF43718_LATEST));
         $streamSF43718DateRangeStub = $this->createStub(StreamInterface::class);
-        $streamSF43718DateRangeStub->method('getContents')->willReturn(file_get_contents(self::JSON_PATH_SF43718_DATE_RANGE));
+        $streamSF43718DateRangeStub->method('getContents')->willReturn(
+            file_get_contents(self::JSON_PATH_SF43718_DATE_RANGE),
+        );
         $this->mockHttpClientResponse(
             $mockHttpClient,
             [
                 'series' => 'SF60653',
                 'body' => $streamSF60653LatestStub,
                 'startDate' => 'oportuno',
-            ]
+            ],
         );
         $this->mockHttpClientResponse(
             $mockHttpClient,
@@ -310,7 +315,7 @@ class SieClientTest extends TestCase
                 'series' => 'SF43718',
                 'body' => $streamSF43718LatestStub,
                 'startDate' => 'oportuno',
-            ]
+            ],
         );
         $this->mockHttpClientResponse(
             $mockHttpClient,
@@ -319,7 +324,7 @@ class SieClientTest extends TestCase
                 'body' => $streamSF43718DateRangeStub,
                 'startDate' => '2020-11-26',
                 'endDate' => '2020-11-27',
-            ]
+            ],
         );
         $this->mockHttpClientResponse(
             $mockHttpClient,
@@ -328,7 +333,7 @@ class SieClientTest extends TestCase
                 'body' => $streamSF60653DateRangeStub,
                 'startDate' => '2020-11-26',
                 'endDate' => '2020-11-27',
-            ]
+            ],
         );
         $this->mockHttpClientResponse(
             $mockHttpClient,
@@ -336,7 +341,7 @@ class SieClientTest extends TestCase
                 'series' => 'SF43718',
                 'body' => $streamSF43718LatestStub,
                 'startDate' => '2020-11-27',
-            ]
+            ],
         );
         $this->mockHttpClientResponse(
             $mockHttpClient,
@@ -344,14 +349,14 @@ class SieClientTest extends TestCase
                 'series' => 'SF60653',
                 'body' => $streamSF60653LatestStub,
                 'startDate' => '2020-12-01',
-            ]
+            ],
         );
         $this->mockHttpClientException($mockHttpClient);
         return $mockHttpClient;
     }
 
     /**
-     * @param array<string, mixed> $params
+     * @param  array<string, mixed>  $params
      */
     private function mockHttpClientResponse(MockHttpClient $mockHttpClient, array $params): void
     {
@@ -359,12 +364,12 @@ class SieClientTest extends TestCase
         $body = $params['body'] ?? '';
         $startDate = $params['startDate'] ?? 'oportuno';
         $endDate = $params['endDate'] ?? $startDate;
-        $suffix = $startDate . ($startDate === 'oportuno' ? '' : ($endDate === 'oportuno' ? '' : "\/$endDate"));
+        $suffix = $startDate . ($startDate === 'oportuno' ? '' : ($endDate === 'oportuno' ? '' : '\/' . $endDate));
         $requestMatcher = new RequestMatcher(
-            "\/SieAPIRest\/service\/v1\/series\/$series\/datos\/$suffix$",
+            sprintf('\/SieAPIRest\/service\/v1\/series\/%s\/datos\/%s$', $series, $suffix),
             'www.banxico.org.mx',
             'GET',
-            'https'
+            'https',
         );
         $mockResponse = $this->createMock(ResponseInterface::class);
         $mockResponse->method('getBody')->willReturn($body);
@@ -378,7 +383,7 @@ class SieClientTest extends TestCase
             '/SieAPIRest/service/v1/series/.+/datos/1700-01-01',
             'www.banxico.org.mx',
             'GET',
-            'https'
+            'https',
         );
         $mockException = new NetworkException('Network error', $this->createMock(RequestInterface::class));
         $mockHttpClient->on($requestMatcher, $mockException);
