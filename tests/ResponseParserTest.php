@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP\Tests;
 
+use Iterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Xint0\BanxicoPHP\ClienteBanxicoException;
 use JsonException;
@@ -24,7 +25,7 @@ use Psr\Http\Message\StreamInterface;
 use PHPUnit\Framework\TestCase;
 use Xint0\BanxicoPHP\SieClientException;
 
-class ResponseParserTest extends TestCase
+final class ResponseParserTest extends TestCase
 {
     private const JSON_PATH_SF43718_DATE_RANGE = __DIR__ . '/data/SF43718_date_range.json';
 
@@ -71,55 +72,53 @@ class ResponseParserTest extends TestCase
     }
 
     /**
-     * @return array<string, array<string, array<string, string|array<string, string>>>>
+     * @return Iterator<string, array<string, array<string, (array<string, string> | string)>>>
      */
-    public static function responseProvider(): array
+    public static function responseProvider(): Iterator
     {
-        return [
-            'SF43718 date range' => [
-                'test_data' => [
-                    'file_path' => self::JSON_PATH_SF43718_DATE_RANGE,
-                ],
-                'final_state' => [
-                    'result' => [
-                        '2020-11-26' => '20.0467',
-                        '2020-11-27' => '20.0777',
-                    ],
+        yield 'SF43718 date range' => [
+            'test_data' => [
+                'file_path' => self::JSON_PATH_SF43718_DATE_RANGE,
+            ],
+            'final_state' => [
+                'result' => [
+                    '2020-11-26' => '20.0467',
+                    '2020-11-27' => '20.0777',
                 ],
             ],
-            'SF43718 latest' => [
-                'test_data' => [
-                    'file_path' => self::JSON_PATH_SF43718_LATEST,
-                ],
-                'final_state' => [
-                    'result' => '20.0777',
+        ];
+        yield 'SF43718 latest' => [
+            'test_data' => [
+                'file_path' => self::JSON_PATH_SF43718_LATEST,
+            ],
+            'final_state' => [
+                'result' => '20.0777',
+            ],
+        ];
+        yield 'SF60653 date range' => [
+            'test_data' => [
+                'file_path' => self::JSON_PATH_SF60653_DATE_RANGE,
+            ],
+            'final_state' => [
+                'result' => [
+                    '2020-11-26' => '20.0577',
+                    '2020-11-27' => '20.0465',
                 ],
             ],
-            'SF60653 date range' => [
-                'test_data' => [
-                    'file_path' => self::JSON_PATH_SF60653_DATE_RANGE,
-                ],
-                'final_state' => [
-                    'result' => [
-                        '2020-11-26' => '20.0577',
-                        '2020-11-27' => '20.0465',
-                    ],
-                ],
+        ];
+        yield 'SF60653 latest' => [
+            'test_data' => [
+                'file_path' => self::JSON_PATH_SF60653_LATEST,
             ],
-            'SF60653 latest' => [
-                'test_data' => [
-                    'file_path' => self::JSON_PATH_SF60653_LATEST,
-                ],
-                'final_state' => [
-                    'result' => '20.0777',
-                ],
+            'final_state' => [
+                'result' => '20.0777',
             ],
         ];
     }
 
     /**
-     * @param array<string, string> $test_data
-     * @param array<string, array<string, string>|string> $final_state
+     * @param  array<string, string>  $test_data
+     * @param  array<string, array<string, string>|string>  $final_state
      */
     #[DataProvider('responseProvider')]
     public function test_parse_method_returns_expected_result(array $test_data, array $final_state): void
@@ -131,6 +130,6 @@ class ResponseParserTest extends TestCase
         $stubResponse->method('getBody')->willReturn($stubStream);
         $sut = new ResponseParser();
         $result = $sut->parse($stubResponse);
-        static::assertEquals($final_state['result'], $result);
+        $this->assertEquals($final_state['result'], $result);
     }
 }

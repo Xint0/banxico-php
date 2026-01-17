@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP\Tests;
 
+use Iterator;
 use Http\Client\Exception\NetworkException;
 use Http\Discovery\ClassDiscovery;
 use Http\Discovery\Strategy\MockClientStrategy;
@@ -28,7 +29,7 @@ use Psr\Http\Message\StreamInterface;
 use Xint0\BanxicoPHP\SieClient;
 use Xint0\BanxicoPHP\SieClientException;
 
-class SieClientTest extends TestCase
+final class SieClientTest extends TestCase
 {
     private const JSON_PATH_SF43718_DATE_RANGE = __DIR__ . '/data/SF43718_date_range.json';
 
@@ -44,104 +45,102 @@ class SieClientTest extends TestCase
     }
 
     /**
-     * @return array<string, array<string, array<string, string|string[]>>>
+     * @return Iterator<string, array<string, array<string, (array<string> | string)>>>
      */
-    public static function expectedRequestProvider(): array
+    public static function expectedRequestProvider(): Iterator
     {
-        return [
-            'USD exchange rate liquidation date' => [
-                'test_data' => [
-                    'method' => 'exchangeRateUsdLiquidation',
-                ],
-                'final_state' => [
-                    'series' => 'SF60653',
-                    'uri_suffix' => 'oportuno',
+        yield 'USD exchange rate liquidation date' => [
+            'test_data' => [
+                'method' => 'exchangeRateUsdLiquidation',
+            ],
+            'final_state' => [
+                'series' => 'SF60653',
+                'uri_suffix' => 'oportuno',
+            ],
+        ];
+        yield 'USD exchange rate determination date' => [
+            'test_data' => [
+                'method' => 'exchangeRateUsdDetermination',
+            ],
+            'final_state' => [
+                'series' => 'SF43718',
+                'uri_suffix' => 'oportuno',
+            ],
+        ];
+        yield 'USD exchange rate liquidation date, date range' => [
+            'test_data' => [
+                'method' => 'exchangeRateUsdLiquidation',
+                'params' => [
+                    '2020-11-26',
+                    '2020-11-27',
                 ],
             ],
-            'USD exchange rate determination date' => [
-                'test_data' => [
-                    'method' => 'exchangeRateUsdDetermination',
-                ],
-                'final_state' => [
-                    'series' => 'SF43718',
-                    'uri_suffix' => 'oportuno',
+            'final_state' => [
+                'series' => 'SF60653',
+                'uri_suffix' => '2020-11-26/2020-11-27',
+            ],
+        ];
+        yield 'USD exchange rate determination date, date rage' => [
+            'test_data' => [
+                'method' => 'exchangeRateUsdDetermination',
+                'params' => [
+                    '2020-11-26',
+                    '2020-11-27',
                 ],
             ],
-            'USD exchange rate liquidation date, date range' => [
-                'test_data' => [
-                    'method' => 'exchangeRateUsdLiquidation',
-                    'params' => [
-                        '2020-11-26',
-                        '2020-11-27',
-                    ],
-                ],
-                'final_state' => [
-                    'series' => 'SF60653',
-                    'uri_suffix' => '2020-11-26/2020-11-27',
-                ],
+            'final_state' => [
+                'series' => 'SF43718',
+                'uri_suffix' => '2020-11-26/2020-11-27',
             ],
-            'USD exchange rate determination date, date rage' => [
-                'test_data' => [
-                    'method' => 'exchangeRateUsdDetermination',
-                    'params' => [
-                        '2020-11-26',
-                        '2020-11-27',
-                    ],
-                ],
-                'final_state' => [
-                    'series' => 'SF43718',
-                    'uri_suffix' => '2020-11-26/2020-11-27',
-                ],
+        ];
+        yield 'USD exchange rate liquidation date, sigle day' => [
+            'test_data' => [
+                'method' => 'exchangeRateUsdLiquidation',
+                'params' => ['2020-12-01'],
             ],
-            'USD exchange rate liquidation date, sigle day' => [
-                'test_data' => [
-                    'method' => 'exchangeRateUsdLiquidation',
-                    'params' => ['2020-12-01'],
-                ],
-                'final_state' => [
-                    'series' => 'SF60653',
-                    'uri_suffix' => '2020-12-01/2020-12-01',
-                ],
+            'final_state' => [
+                'series' => 'SF60653',
+                'uri_suffix' => '2020-12-01/2020-12-01',
             ],
-            'USD exchange rate determination date, sigle day' => [
-                'test_data' => [
-                    'method' => 'exchangeRateUsdDetermination',
-                    'params' => ['2020-11-27'],
-                ],
-                'final_state' => [
-                    'series' => 'SF43718',
-                    'uri_suffix' => '2020-11-27/2020-11-27',
-                ],
+        ];
+        yield 'USD exchange rate determination date, sigle day' => [
+            'test_data' => [
+                'method' => 'exchangeRateUsdDetermination',
+                'params' => ['2020-11-27'],
             ],
-            'Fetch series SF60653, current' => [
-                'test_data' => [
-                    'method' => 'fetchSeries',
-                    'params' => ['SF60653'],
-                ],
-                'final_state' => [
-                    'series' => 'SF60653',
-                    'uri_suffix' => 'oportuno',
-                ],
+            'final_state' => [
+                'series' => 'SF43718',
+                'uri_suffix' => '2020-11-27/2020-11-27',
             ],
-            'Fetch series SF43718, date range' => [
-                'test_data' => [
-                    'method' => 'fetchSeries',
-                    'params' => ['SF43718', '2020-11-26', '2020-11-27'],
-                ],
-                'final_state' => [
-                    'series' => 'SF43718',
-                    'uri_suffix' => '2020-11-26/2020-11-27',
-                ],
+        ];
+        yield 'Fetch series SF60653, current' => [
+            'test_data' => [
+                'method' => 'fetchSeries',
+                'params' => ['SF60653'],
             ],
-            'Fetch series SF60653, single day' => [
-                'test_data' => [
-                    'method' => 'fetchSeries',
-                    'params' => ['SF60653', '2020-12-01'],
-                ],
-                'final_state' => [
-                    'series' => 'SF60653',
-                    'uri_suffix' => '2020-12-01/2020-12-01',
-                ],
+            'final_state' => [
+                'series' => 'SF60653',
+                'uri_suffix' => 'oportuno',
+            ],
+        ];
+        yield 'Fetch series SF43718, date range' => [
+            'test_data' => [
+                'method' => 'fetchSeries',
+                'params' => ['SF43718', '2020-11-26', '2020-11-27'],
+            ],
+            'final_state' => [
+                'series' => 'SF43718',
+                'uri_suffix' => '2020-11-26/2020-11-27',
+            ],
+        ];
+        yield 'Fetch series SF60653, single day' => [
+            'test_data' => [
+                'method' => 'fetchSeries',
+                'params' => ['SF60653', '2020-12-01'],
+            ],
+            'final_state' => [
+                'series' => 'SF60653',
+                'uri_suffix' => '2020-12-01/2020-12-01',
             ],
         ];
     }
@@ -179,37 +178,35 @@ class SieClientTest extends TestCase
         $sut->{$method}(...$params);
 
         $requests = $mockHttpClient->getRequests();
-        static::assertCount(1, $requests);
+        $this->assertCount(1, $requests);
         $request = $requests[0];
-        static::assertEquals('GET', $request->getMethod());
-        static::assertEquals($expectedUri, (string)$request->getUri());
-        static::assertEquals($expectedHeaders, $request->getHeaders());
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertSame($expectedUri, (string)$request->getUri());
+        $this->assertEquals($expectedHeaders, $request->getHeaders());
     }
 
     /**
-     * @return array<string, array<string, string|string[]>>
+     * @return Iterator<string, array<string, (array<string> | string)>>
      */
-    public static function exchangeRateUsdLiquidationProvider(): array
+    public static function exchangeRateUsdLiquidationProvider(): Iterator
     {
-        return [
-            'current' => [
-                'params' => [],
-                'expected_result' => '20.0777',
+        yield 'current' => [
+            'params' => [],
+            'expected_result' => '20.0777',
+        ];
+        yield 'date range' => [
+            'params' => [
+                '2020-11-26',
+                '2020-11-27',
             ],
-            'date range' => [
-                'params' => [
-                    '2020-11-26',
-                    '2020-11-27',
-                ],
-                'expected_result' => [
-                    '2020-11-26' => '20.0577',
-                    '2020-11-27' => '20.0465',
-                ],
+            'expected_result' => [
+                '2020-11-26' => '20.0577',
+                '2020-11-27' => '20.0465',
             ],
-            'single day' => [
-                'params' => ['2020-12-01'],
-                'expected_result' => '20.0777',
-            ],
+        ];
+        yield 'single day' => [
+            'params' => ['2020-12-01'],
+            'expected_result' => '20.0777',
         ];
     }
 
@@ -217,37 +214,37 @@ class SieClientTest extends TestCase
      * @param  string[]  $params
      */
     #[DataProvider('exchangeRateUsdLiquidationProvider')]
-    public function test_exchange_rate_usd_liquidation_method_returns_expected_result(array $params, string | array $expected_result): void
-    {
+    public function test_exchange_rate_usd_liquidation_method_returns_expected_result(
+        array $params,
+        string | array $expected_result,
+    ): void {
         $mockHttpClient = $this->mockHttpClient();
         $sut = new SieClient('test-token', $mockHttpClient);
 
         $result = $sut->exchangeRateUsdLiquidation(...$params);
 
-        static::assertEquals($expected_result, $result);
+        $this->assertEquals($expected_result, $result);
     }
 
     /**
-     * @return array<string, array<string, string|string[]>>
+     * @return Iterator<string, array<string, (array<string> | string)>>
      */
-    public static function exchangeRateUsdDeterminationProvider(): array
+    public static function exchangeRateUsdDeterminationProvider(): Iterator
     {
-        return [
-            'current' => [
-                'params' => [],
-                'expected_result' => '20.0777',
+        yield 'current' => [
+            'params' => [],
+            'expected_result' => '20.0777',
+        ];
+        yield 'date range' => [
+            'params' => ['2020-11-26', '2020-11-27'],
+            'expected_result' => [
+                '2020-11-26' => '20.0467',
+                '2020-11-27' => '20.0777',
             ],
-            'date range' => [
-                'params' => ['2020-11-26', '2020-11-27'],
-                'expected_result' => [
-                    '2020-11-26' => '20.0467',
-                    '2020-11-27' => '20.0777',
-                ],
-            ],
-            'single day' => [
-                'params' => ['2020-11-27'],
-                'expected_result' => '20.0777',
-            ],
+        ];
+        yield 'single day' => [
+            'params' => ['2020-11-27'],
+            'expected_result' => '20.0777',
         ];
     }
 
@@ -255,14 +252,16 @@ class SieClientTest extends TestCase
      * @param  string[]  $params
      */
     #[DataProvider('exchangeRateUsdDeterminationProvider')]
-    public function test_exchange_rate_usd_determination_method_returns_expected_result(array $params, string | array $expected_result): void
-    {
+    public function test_exchange_rate_usd_determination_method_returns_expected_result(
+        array $params,
+        string | array $expected_result,
+    ): void {
         $mockHttpClient = $this->mockHttpClient();
         $sut = new SieClient('test-token', $mockHttpClient);
 
         $result = $sut->exchangeRateUsdDetermination(...$params);
 
-        static::assertEquals($expected_result, $result);
+        $this->assertEquals($expected_result, $result);
     }
 
     public function test_exchange_rate_usd_determination_method_throws_expected_exception_on_http_client_exception(): void
