@@ -44,7 +44,7 @@ class SieClient
     /**
      * @param  string  $token
      * @param  ClientInterface|null  $httpClient
-     * @param  array<string, mixed>  $params
+     * @param  array{base_uri?:string}  $params
      */
     public function __construct(string $token, ?ClientInterface $httpClient = null, array $params = [])
     {
@@ -97,6 +97,9 @@ class SieClient
 
     private function baseUri(): string
     {
+        if (! is_string($this->params['base_uri'])) {
+            throw new SieClientException('Base URI must be a string.');
+        }
         return $this->params['base_uri'];
     }
 }
