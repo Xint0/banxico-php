@@ -70,26 +70,32 @@ class ResponseParser
         if (! is_array($json['bmx']) || ! is_array($json['bmx']['series'])) {
             throw new SieClientException('Response parsing failed.', 4);
         }
+
         $result = [];
         foreach ($json['bmx']['series'] as $series) {
             if (! is_array($series)) {
                 throw new SieClientException('Response parsing failed.', 5);
             }
+
             $seriesId = $series['idSerie'];
             if (! is_string($seriesId)) {
                 throw new SieClientException('Response parsing failed.', 6);
             }
+
             $result[$seriesId] = [];
             if (! is_array($series['datos'])) {
                 throw new SieClientException('Response parsing failed.', 7);
             }
+
             foreach ($series['datos'] as $record) {
                 if (! is_array($record)) {
                     throw new SieClientException('Response parsing failed.', 8);
                 }
+
                 if (! is_string($record['fecha'])) {
                     throw new SieClientException('Response parsing failed.', 9);
                 }
+
                 $date_key = $this->normalizeDateString($record['fecha']);
                 $result[$seriesId][$date_key] = $record['dato'];
             }
@@ -113,6 +119,7 @@ class ResponseParser
             if ($dateValue === false) {
                 throw new SieClientException('Invalid date format.');
             }
+
             return $dateValue->format('Y-m-d');
         } catch (ValueError $valueError) {
             throw new SieClientException('Invalid date format.', 0, $valueError);

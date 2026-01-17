@@ -16,6 +16,7 @@ namespace Xint0\BanxicoPHP;
 
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
+use SensitiveParameter;
 use Xint0\BanxicoPHP\Factories\HttpClientFactory;
 use Xint0\BanxicoPHP\Factories\RequestFactory;
 
@@ -42,12 +43,15 @@ class SieClient
     private array $params;
 
     /**
-     * @param  string  $token
-     * @param  ClientInterface|null  $httpClient
-     * @param  array{base_uri?:string}  $params
+     * @param  string  $token  Service authentication token.
+     * @param  ClientInterface|null  $httpClient  Optional HTTP client.
+     * @param  array{base_uri?:string}  $params  Optional client parameters.
      */
-    public function __construct(string $token, ?ClientInterface $httpClient = null, array $params = [])
-    {
+    public function __construct(
+        #[SensitiveParameter]string $token,
+        ?ClientInterface $httpClient = null,
+        array $params = [],
+    ) {
         $this->params = self::DEFAULT_PARAMS + $params;
         $this->httpClient = HttpClientFactory::create($token, [], $httpClient);
         $this->requestFactory = new RequestFactory($this->baseUri());
@@ -100,6 +104,7 @@ class SieClient
         if (! is_string($this->params['base_uri'])) {
             throw new SieClientException('Base URI must be a string.');
         }
+
         return $this->params['base_uri'];
     }
 }
