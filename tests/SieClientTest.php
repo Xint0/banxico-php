@@ -357,12 +357,12 @@ final class SieClientTest extends TestCase
     }
 
     /**
-     * @param  array<string, mixed>  $params
+     * @param  array{series:string,body:StreamInterface,startDate?:string,endDate?:string}  $params
      */
     private function mockHttpClientResponse(MockHttpClient $mockHttpClient, array $params): void
     {
         $series = $params['series'];
-        $body = $params['body'] ?? '';
+        $body = $params['body'];
         $startDate = $params['startDate'] ?? 'oportuno';
         $endDate = $params['endDate'] ?? $startDate;
         $suffix = $startDate . ($startDate === 'oportuno' ? '' : ($endDate === 'oportuno' ? '' : '\/' . $endDate));
