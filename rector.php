@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\PHPUnit\Set\PHPUnitSetList;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -20,6 +21,8 @@ return RectorConfig::configure()
         rectorPreset: true,
         phpunitCodeQuality: true,
     )
-    ->withAttributesSets(phpunit: true)
+    ->withSets([
+        PHPUnitSetList::PHPUNIT_100,
+    ])
     ->withImportNames()
     ->withTreatClassesAsFinal();
