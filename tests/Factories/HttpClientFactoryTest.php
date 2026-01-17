@@ -14,11 +14,11 @@ declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP\Tests\Factories;
 
+use Http\Client\Common\PluginClient;
 use Http\Discovery\ClassDiscovery;
 use Http\Discovery\Strategy\MockClientStrategy;
-use Psr\Http\Client\ClientInterface;
-use Xint0\BanxicoPHP\Factories\HttpClientFactory;
 use PHPUnit\Framework\TestCase;
+use Xint0\BanxicoPHP\Factories\HttpClientFactory;
 
 final class HttpClientFactoryTest extends TestCase
 {
@@ -27,7 +27,6 @@ final class HttpClientFactoryTest extends TestCase
         ClassDiscovery::appendStrategy(MockClientStrategy::class);
         $token = 'test-token';
         $httpClient = HttpClientFactory::create($token);
-        $this->assertNotNull($httpClient);
-        $this->assertInstanceOf(ClientInterface::class, $httpClient);
+        $this->assertInstanceOf(PluginClient::class, $httpClient);
     }
 }
