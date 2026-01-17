@@ -198,7 +198,7 @@ class SieClientTest extends TestCase
     #[DataProvider('exchangeRateUsdLiquidationProvider')]
     public function test_exchange_rate_usd_liquidation_method_returns_expected_result(
         array $params,
-        $expected_result
+        string|array $expected_result
     ): void {
         $mockHttpClient = $this->mockHttpClient();
         $sut = new SieClient('test-token', $mockHttpClient);
@@ -232,7 +232,7 @@ class SieClientTest extends TestCase
     #[DataProvider('exchangeRateUsdDeterminationProvider')]
     public function test_exchange_rate_usd_determination_method_returns_expected_result(
         array $params,
-        $expected_result
+        string|array $expected_result
     ): void {
         $mockHttpClient = $this->mockHttpClient();
         $sut = new SieClient('test-token', $mockHttpClient);
