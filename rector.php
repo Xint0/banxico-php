@@ -17,7 +17,9 @@ return RectorConfig::configure()
         typeDeclarations: true,
         typeDeclarationDocblocks: true,
         earlyReturn: true,
+        rectorPreset: true,
         phpunitCodeQuality: true,
     )
+    ->withAttributesSets(phpunit: true)
     ->withImportNames()
     ->withTreatClassesAsFinal();
