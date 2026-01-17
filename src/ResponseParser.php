@@ -76,7 +76,7 @@ class ResponseParser
         }
 
         if (count($result) === 1) {
-            $result = array_values($result)[0];
+            return array_values($result)[0];
         }
 
         return $result;
