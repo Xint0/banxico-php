@@ -13,9 +13,9 @@ return RectorConfig::configure()
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
+        codingStyle: true,
         typeDeclarations: true,
         typeDeclarationDocblocks: true,
     )
-    ->withCodingStyleLevel(11)
     ->withImportNames()
     ->withTreatClassesAsFinal();
