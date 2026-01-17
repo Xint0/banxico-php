@@ -14,9 +14,11 @@ declare(strict_types=1);
 
 namespace Xint0\BanxicoPHP;
 
+use DateTimeImmutable;
 use JsonException;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+use ValueError;
 
 /**
  * Class ResponseParser
@@ -51,22 +53,44 @@ class ResponseParser
             throw new SieClientException('Response parsing failed.', 2, $jsonException);
         }
 
+        if (! is_array($jsonValue)) {
+            throw new SieClientException('Response parsing failed.', 3);
+        }
+
         return $this->transformJson($jsonValue);
     }
 
     /**
-     * @param  array<string, mixed>  $json  The decoded JSON array
+     * @param  array<mixed, mixed>  $json  The decoded JSON array
      *
-     * @return array|mixed
+     * @return array<string, mixed>|mixed
      */
     private function transformJson(array $json)
     {
+        if (! is_array($json['bmx']) || ! is_array($json['bmx']['series'])) {
+            throw new SieClientException('Response parsing failed.', 4);
+        }
         $result = [];
         foreach ($json['bmx']['series'] as $series) {
+            if (! is_array($series)) {
+                throw new SieClientException('Response parsing failed.', 5);
+            }
             $seriesId = $series['idSerie'];
+            if (! is_string($seriesId)) {
+                throw new SieClientException('Response parsing failed.', 6);
+            }
             $result[$seriesId] = [];
+            if (! is_array($series['datos'])) {
+                throw new SieClientException('Response parsing failed.', 7);
+            }
             foreach ($series['datos'] as $record) {
-                $date_key = $this->normalizeDateString((string)$record['fecha']);
+                if (! is_array($record)) {
+                    throw new SieClientException('Response parsing failed.', 8);
+                }
+                if (! is_string($record['fecha'])) {
+                    throw new SieClientException('Response parsing failed.', 9);
+                }
+                $date_key = $this->normalizeDateString($record['fecha']);
                 $result[$seriesId][$date_key] = $record['dato'];
             }
         }
@@ -85,13 +109,13 @@ class ResponseParser
     private function normalizeDateString(string $dateString): string
     {
         try {
-            $dateValue = \DateTimeImmutable::createFromFormat('d/m/Y', $dateString);
+            $dateValue = DateTimeImmutable::createFromFormat('d/m/Y', $dateString);
             if ($dateValue === false) {
                 throw new SieClientException('Invalid date format.');
             }
             return $dateValue->format('Y-m-d');
-        } catch (\ValueError $valueError) {
-            throw new SieClientException('Invalid date format.');
+        } catch (ValueError $valueError) {
+            throw new SieClientException('Invalid date format.', 0, $valueError);
         }
     }
 }
