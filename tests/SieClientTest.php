@@ -212,6 +212,7 @@ final class SieClientTest extends TestCase
 
     /**
      * @param  string[]  $params
+     * @param  numeric-string|array<string, numeric-string>  $expected_result
      */
     #[DataProvider('exchangeRateUsdLiquidationProvider')]
     public function test_exchange_rate_usd_liquidation_method_returns_expected_result(
@@ -250,6 +251,7 @@ final class SieClientTest extends TestCase
 
     /**
      * @param  string[]  $params
+     * @param  numeric-string|array<string,numeric-string>  $expected_result
      */
     #[DataProvider('exchangeRateUsdDeterminationProvider')]
     public function test_exchange_rate_usd_determination_method_returns_expected_result(
