@@ -16,6 +16,6 @@ return RectorConfig::configure()
         typeDeclarations: true,
         typeDeclarationDocblocks: true,
     )
-    ->withCodingStyleLevel(2)
+    ->withCodingStyleLevel(11)
     ->withImportNames()
     ->withTreatClassesAsFinal();
