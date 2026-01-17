@@ -31,8 +31,11 @@ use Xint0\BanxicoPHP\SieClientException;
 class SieClientTest extends TestCase
 {
     private const JSON_PATH_SF43718_DATE_RANGE = __DIR__ . '/data/SF43718_date_range.json';
+
     private const JSON_PATH_SF43718_LATEST = __DIR__ . '/data/SF43718_latest.json';
+
     private const JSON_PATH_SF60653_DATE_RANGE = __DIR__ . '/data/SF60653_date_range.json';
+
     private const JSON_PATH_SF60653_LATEST = __DIR__ . '/data/SF60653_latest.json';
 
     protected function setUp(): void

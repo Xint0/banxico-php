@@ -27,8 +27,11 @@ use Xint0\BanxicoPHP\SieClientException;
 class ResponseParserTest extends TestCase
 {
     private const JSON_PATH_SF43718_DATE_RANGE = __DIR__ . '/data/SF43718_date_range.json';
+
     private const JSON_PATH_SF43718_LATEST = __DIR__ . '/data/SF43718_latest.json';
+
     private const JSON_PATH_SF60653_DATE_RANGE = __DIR__ . '/data/SF60653_date_range.json';
+
     private const JSON_PATH_SF60653_LATEST = __DIR__ . '/data/SF60653_latest.json';
 
     public function test_parse_method_throws_expected_exception_when_status_code_is_not_success(): void
