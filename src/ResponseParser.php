@@ -55,7 +55,7 @@ class ResponseParser
     }
 
     /**
-     * @param array<string, mixed> $json The decoded JSON array
+     * @param  array<string, mixed>  $json  The decoded JSON array
      *
      * @return array|mixed
      */
@@ -66,7 +66,7 @@ class ResponseParser
             $seriesId = $series['idSerie'];
             $result[$seriesId] = [];
             foreach ($series['datos'] as $record) {
-                $date_key = date_create_immutable_from_format('d/m/Y', $record['fecha'])->format('Y-m-d');
+                $date_key = $this->normalizeDateString((string)$record['fecha']);
                 $result[$seriesId][$date_key] = $record['dato'];
             }
         }
@@ -80,5 +80,18 @@ class ResponseParser
         }
 
         return $result;
+    }
+
+    private function normalizeDateString(string $dateString): string
+    {
+        try {
+            $dateValue = \DateTimeImmutable::createFromFormat('d/m/Y', $dateString);
+            if ($dateValue === false) {
+                throw new SieClientException('Invalid date format.');
+            }
+            return $dateValue->format('Y-m-d');
+        } catch (\ValueError $valueError) {
+            throw new SieClientException('Invalid date format.');
+        }
     }
 }
