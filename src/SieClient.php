@@ -63,9 +63,9 @@ class SieClient
      * @param  string|null  $start_date  The start date in YYYY-MM-DD format, optional.
      * @param  string|null  $end_date  The end date in YYYY-MM-DD format, optional.
      *
-     * @return array|mixed
+     * @return numeric-string|array<string,numeric-string>|array<string,array<string,numeric-string>>
      */
-    public function fetchSeries(string $series, ?string $start_date = null, ?string $end_date = null)
+    public function fetchSeries(string $series, ?string $start_date = null, ?string $end_date = null): string | array
     {
         $request = $this->requestFactory->createRequest($series, $start_date, $end_date);
         try {
@@ -81,9 +81,9 @@ class SieClient
      * @param  string|null  $start_date  The start date in YYYY-MM-DD format, optional.
      * @param  string|null  $end_date  The end date in YYYY-MM-DD format, optional.
      *
-     * @return array|mixed
+     * @return numeric-string|array<string,numeric-string>|array<string,array<string,numeric-string>>
      */
-    public function exchangeRateUsdDetermination(?string $start_date = null, ?string $end_date = null)
+    public function exchangeRateUsdDetermination(?string $start_date = null, ?string $end_date = null): string | array
     {
         return $this->fetchSeries(self::SERIES_USD_EXCHANGE_RATE_DETERMINATION, $start_date, $end_date);
     }
@@ -92,9 +92,9 @@ class SieClient
      * @param  string|null  $start_date  The start date in YYYY-MM-DD format, optional.
      * @param  string|null  $end_date  The end date in YYYY-MM-DD format, optional.
      *
-     * @return array|mixed
+     * @return numeric-string|array<string,numeric-string>|array<string,array<string,numeric-string>>
      */
-    public function exchangeRateUsdLiquidation(?string $start_date = null, ?string $end_date = null)
+    public function exchangeRateUsdLiquidation(?string $start_date = null, ?string $end_date = null): string | array
     {
         return $this->fetchSeries(self::SERIES_USD_EXCHANGE_RATE_LIQUIDATION, $start_date, $end_date);
     }
