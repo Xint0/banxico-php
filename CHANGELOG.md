@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/Xint0/banxico-php/compare/2.0.1...master)
 
+## [3.0.0](https://github.com/Xint0/banxico-php/compare/2.0.1...3.0.0) 2026-01-17
+
 ### Added
 
-- Include PHP 8.4 in ci test job version matrix.
+- Include PHP 8.4, and 8.5 in ci test job version matrix.
+- Add rector/rector to development dependencies.
+
+### Changed
+
+- Increase phpstan level to 10.
+- Remove PHP 8.1 from ci test job matrix.
+- Apply rector code changes.
+- Add response verification in ResponseParser.
+- Add PHPDoc annotations in SieClient.
 
 ## [2.0.1](https://github.com/Xint0/banxico-php/compare/2.0.0...2.0.1) 2024-11-30
 
